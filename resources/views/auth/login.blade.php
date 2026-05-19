@@ -1,4 +1,12 @@
 <x-guest-layout>
+    <div class="mb-6 text-center">
+        <h1 class="text-2xl font-bold text-gray-900">Login User</h1>
+        <p class="mt-2 text-sm text-gray-600">
+            Halaman ini khusus user.
+            <a href="{{ route('admin.login') }}" class="underline hover:text-gray-900">Login admin di sini</a>.
+        </p>
+    </div>
+
     <!-- Session Status -->
     <x-auth-session-status class="mb-4" :status="session('status')" />
 

@@ -6,7 +6,7 @@ use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-class AdminMiddleware
+class UserOnlyMiddleware
 {
     /**
      * Handle an incoming request.
@@ -16,11 +16,11 @@ class AdminMiddleware
     public function handle(Request $request, Closure $next): Response
     {
         if (! auth()->check()) {
-            return redirect()->route('admin.login');
+            return redirect()->route('login');
         }
 
-        if (! auth()->user()->isAdmin()) {
-            abort(403, 'Akses ditolak. Hanya admin yang diizinkan.');
+        if (auth()->user()->isAdmin()) {
+            abort(403, 'Halaman ini hanya tersedia untuk user.');
         }
 
         return $next($request);

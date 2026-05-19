@@ -10,10 +10,12 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class Booking extends Model
 {
     protected $fillable = [
+        'order_id',
         'user_id',
         'schedule_id',
         'seat_number',
         'status',
+        'snap_token',
     ];
 
     /**
