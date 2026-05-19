@@ -1,0 +1,48 @@
+<?php
+
+use App\Http\Controllers\ProfileController;
+use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Admin\AdminController;
+use App\Http\Controllers\Admin\FilmController;
+use App\Http\Controllers\Admin\ScheduleController;
+use App\Http\Controllers\BookingController;
+
+Route::get('/', function () {
+    $films = \App\Models\Film::latest()->get();
+    $schedules = \App\Models\Schedule::with('film')
+        ->whereDate('tanggal', today())
+        ->orderBy('jam_tayang')
+        ->get();
+    return view('welcome', compact('films', 'schedules'));
+});
+
+Route::middleware('auth')->group(function () {
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+    Route::get('/booking/seats/{schedule}', [BookingController::class, 'selectSeats'])->name('booking.seats');
+    Route::post('/booking/confirm/{schedule}', [BookingController::class, 'confirm'])->name('booking.confirm');
+});
+
+// Route khusus admin
+Route::middleware(['auth', 'admin'])
+    ->prefix('admin')
+    ->name('admin.')
+    ->group(function () {
+        Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('dashboard');
+        Route::resource('films', FilmController::class);
+        Route::resource('schedules', ScheduleController::class);
+    });
+
+Route::get('/films/{film}', function (\App\Models\Film $film) {
+    $schedules = \App\Models\Schedule::with('film')
+        ->where('film_id', $film->id)
+        ->whereDate('tanggal', '>=', today())
+        ->orderBy('tanggal')
+        ->orderBy('jam_tayang')
+        ->get();
+    return view('films.detail', compact('film', 'schedules'));
+})->name('films.detail');
+
+
+require __DIR__.'/auth.php';
