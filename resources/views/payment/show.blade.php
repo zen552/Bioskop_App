@@ -16,7 +16,7 @@
     <nav class="sticky top-0 z-50 bg-[#0f0f13]/80 backdrop-blur-md border-b border-white/5 px-6 py-4">
         <div class="max-w-4xl mx-auto flex justify-between items-center">
             <a href="{{ url('/') }}" class="text-lg font-semibold tracking-tight">
-                🎬 <span class="text-indigo-400">Bioskop</span>Ku
+                <span class="text-indigo-400">Bioskop</span>Ku
             </a>
             <a href="{{ url('/') }}"
                class="text-xs font-medium bg-white/5 border border-white/10 px-4 py-2 rounded-full hover:bg-white/10 transition text-gray-300">
