@@ -1,45 +1,103 @@
-<x-app-layout>
-    <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Ringkasan Pembayaran') }}
-        </h2>
-    </x-slot>
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ringkasan Pembayaran — BioskopKu</title>
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+    </style>
+</head>
+<body class="bg-[#0f0f13] text-white min-h-screen">
 
-    <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-6 text-gray-900">
-                    <h3 class="text-lg font-bold mb-4">Detail Pesanan ({{ $order_id }})</h3>
-                    
-                    <div class="mb-4">
-                        <p><strong>Film:</strong> {{ $schedule->film->judul }}</p>
-                        <p><strong>Jadwal:</strong> {{ $schedule->tanggal }} - {{ $schedule->jam_tayang }}</p>
-                        <p><strong>Studio:</strong> {{ $schedule->studio }}</p>
-                    </div>
+    <!-- Navbar -->
+    <nav class="sticky top-0 z-50 bg-[#0f0f13]/80 backdrop-blur-md border-b border-white/5 px-6 py-4">
+        <div class="max-w-4xl mx-auto flex justify-between items-center">
+            <a href="{{ url('/') }}" class="text-lg font-semibold tracking-tight">
+                🎬 <span class="text-indigo-400">Bioskop</span>Ku
+            </a>
+            <a href="{{ url('/') }}"
+               class="text-xs font-medium bg-white/5 border border-white/10 px-4 py-2 rounded-full hover:bg-white/10 transition text-gray-300">
+                ← Beranda
+            </a>
+        </div>
+    </nav>
 
-                    <div class="mb-4">
-                        <h4 class="font-semibold mb-2">Kursi yang dipesan:</h4>
-                        <ul class="list-disc pl-5">
-                            @foreach($bookings as $booking)
-                                <li>Kursi {{ $booking->seat_number }} (Rp {{ number_format($schedule->harga, 0, ',', '.') }})</li>
-                            @endforeach
-                        </ul>
-                    </div>
+    <div class="max-w-2xl mx-auto px-6 py-10">
 
-                    <div class="mt-6 border-t pt-4">
-                        <h4 class="text-xl font-bold">Total Pembayaran: Rp {{ number_format($totalPrice, 0, ',', '.') }}</h4>
-                    </div>
+        <div class="mb-6">
+            <p class="text-xs font-medium tracking-widest text-indigo-400 uppercase mb-2">Ringkasan Pesanan</p>
+            <h1 class="text-2xl font-bold text-white">Detail Pembayaran</h1>
+        </div>
 
-                    <div class="mt-6">
-                        <form action="{{ route('payment.process', $order_id) }}" method="POST">
-                            @csrf
-                            <button type="submit" class="bg-blue-600 text-white px-6 py-2 rounded-md hover:bg-blue-700 transition">
-                                Lanjutkan ke Pembayaran
-                            </button>
-                        </form>
-                    </div>
+        <div class="bg-[#16161d] border border-white/5 rounded-2xl overflow-hidden mb-4">
+
+            <!-- Film Info -->
+            <div class="p-6 border-b border-white/5">
+                <p class="text-xs text-gray-500 uppercase tracking-widest mb-1">Film</p>
+                <p class="text-xl font-bold text-white">{{ $schedule->film->judul }}</p>
+            </div>
+
+            <!-- Schedule Info -->
+            <div class="grid grid-cols-3 divide-x divide-white/5 border-b border-white/5">
+                <div class="p-5">
+                    <p class="text-xs text-gray-500 uppercase tracking-widest mb-1">Tanggal</p>
+                    <p class="font-semibold text-white text-sm">
+                        {{ \Carbon\Carbon::parse($schedule->tanggal)->translatedFormat('d F Y') }}
+                    </p>
+                </div>
+                <div class="p-5">
+                    <p class="text-xs text-gray-500 uppercase tracking-widest mb-1">Jam</p>
+                    <p class="font-semibold text-amber-400 text-sm">
+                        {{ \Carbon\Carbon::parse($schedule->jam_tayang)->format('H:i') }}
+                    </p>
+                </div>
+                <div class="p-5">
+                    <p class="text-xs text-gray-500 uppercase tracking-widest mb-1">Studio</p>
+                    <p class="font-semibold text-white text-sm">{{ $schedule->studio }}</p>
                 </div>
             </div>
+
+            <!-- Seats -->
+            <div class="p-6 border-b border-white/5">
+                <p class="text-xs text-gray-500 uppercase tracking-widest mb-3">Kursi Dipesan</p>
+                <div class="flex flex-wrap gap-2">
+                    @foreach($bookings as $booking)
+                    <span class="bg-indigo-600/20 text-indigo-300 border border-indigo-500/30 text-xs font-semibold px-3 py-1 rounded-full">
+                        {{ $booking->seat_number }}
+                    </span>
+                    @endforeach
+                </div>
+            </div>
+
+            <!-- Total -->
+            <div class="p-6 flex justify-between items-center">
+                <div>
+                    <p class="text-xs text-gray-500 uppercase tracking-widest mb-1">Total Pembayaran</p>
+                    <p class="text-2xl font-bold text-emerald-400">
+                        Rp {{ number_format($totalPrice, 0, ',', '.') }}
+                    </p>
+                </div>
+                <p class="text-xs text-gray-600 font-mono">{{ $order_id }}</p>
+            </div>
         </div>
+
+        <!-- CTA -->
+        <form action="{{ route('payment.process', $order_id) }}" method="POST">
+            @csrf
+            <button type="submit"
+                    class="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-semibold py-3 rounded-xl transition text-sm">
+                Lanjutkan ke Pembayaran →
+            </button>
+        </form>
+
     </div>
-</x-app-layout>
+
+    <footer class="border-t border-white/5 text-center py-6 text-xs text-gray-700">
+        © {{ date('Y') }} BioskopKu — All rights reserved.
+    </footer>
+
+</body>
+</html>
