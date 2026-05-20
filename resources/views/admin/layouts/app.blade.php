@@ -34,12 +34,10 @@
                 <a href="{{ route('admin.films.index') }}"
                    class="{{ request()->routeIs('admin.films.*') ? 'bg-indigo-600/20 text-white border-indigo-400/30' : 'text-slate-300 border-transparent hover:bg-white/5 hover:text-white' }} flex items-center justify-between rounded-2xl border px-4 py-3 text-sm font-medium transition">
                     <span>Film</span>
-                    <span class="text-xs text-slate-500">CRUD</span>
                 </a>
                 <a href="{{ route('admin.schedules.index') }}"
                    class="{{ request()->routeIs('admin.schedules.*') ? 'bg-indigo-600/20 text-white border-indigo-400/30' : 'text-slate-300 border-transparent hover:bg-white/5 hover:text-white' }} flex items-center justify-between rounded-2xl border px-4 py-3 text-sm font-medium transition">
-                    <span>Jadwal</span>
-                    <span class="text-xs text-slate-500">Tayang</span>
+                    <span>Jadwal Tayang</span>
                 </a>
                 <a href="{{ route('admin.preview') }}"
                    class="{{ request()->routeIs('admin.preview*') ? 'bg-indigo-600/20 text-white border-indigo-400/30' : 'text-slate-300 border-transparent hover:bg-white/5 hover:text-white' }} flex items-center justify-between rounded-2xl border px-4 py-3 text-sm font-medium transition">
