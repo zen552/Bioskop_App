@@ -21,51 +21,19 @@ class AuthenticatedSessionController extends Controller
     }
 
     /**
-     * Display the admin login view.
-     */
-    public function adminCreate(): View
-    {
-        return view('admin.auth.login');
-    }
-
-    /**
      * Handle an incoming authentication request.
      */
     public function store(LoginRequest $request): RedirectResponse
     {
         $request->authenticate();
 
-        if (Auth::user()->isAdmin()) {
-            $this->logoutInvalidRole($request);
-
-            throw ValidationException::withMessages([
-                'email' => 'Akun admin hanya bisa masuk melalui halaman login admin.',
-            ]);
-        }
-
         $request->session()->regenerate();
+
+        if (Auth::user()->isAdmin()) {
+            return redirect()->intended(route('admin.dashboard'));
+        }
 
         return redirect()->intended(url('/'));
-    }
-
-    /**
-     * Handle an incoming admin authentication request.
-     */
-    public function adminStore(LoginRequest $request): RedirectResponse
-    {
-        $request->authenticate();
-
-        if (! Auth::user()->isAdmin()) {
-            $this->logoutInvalidRole($request);
-
-            throw ValidationException::withMessages([
-                'email' => 'Halaman login admin hanya dapat digunakan oleh admin.',
-            ]);
-        }
-
-        $request->session()->regenerate();
-
-        return redirect()->intended(route('admin.dashboard'));
     }
 
     /**
