@@ -47,17 +47,21 @@ class BookingController extends Controller
             return back()->withErrors('Maaf, salah satu kursi yang Anda pilih baru saja dipesan oleh orang lain. Silakan pilih kursi lain.');
         }
 
+        // Generate unique order_id
+        $orderId = 'ORDER-' . time() . '-' . rand(1000, 9999);
+
         // Loop untuk menyimpan setiap kursi yang dipesan ke database
         foreach ($seats as $seat) {
             Booking::create([
+                'order_id'    => $orderId,
                 'user_id'     => auth()->id(),
                 'schedule_id' => $schedule->id,
                 'seat_number' => $seat,
-                'status'      => 'sold', // Kamu bisa set 'pending' jika nanti pakai Payment Gateway
+                'status'      => 'pending',
             ]);
         }
 
-        // Redirect ke halaman sukses atau dashboard setelah berhasil
-        return redirect('/')->with('success', 'Tiket film berhasil dipesan!');
+        // Redirect ke halaman pembayaran
+        return redirect()->route('payment.show', $orderId)->with('success', 'Silakan selesaikan pembayaran tiket Anda.');
     }
 }

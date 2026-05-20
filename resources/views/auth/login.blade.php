@@ -1,4 +1,11 @@
 <x-guest-layout>
+    <div class="mb-6 text-center">
+        <h1 class="text-2xl font-bold text-gray-900">Login</h1>
+        <p class="mt-2 text-sm text-gray-600">
+            Masuk ke akun BioskopKu kamu.
+        </p>
+    </div>
+
     <!-- Session Status -->
     <x-auth-session-status class="mb-4" :status="session('status')" />
 

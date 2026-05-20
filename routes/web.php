@@ -16,12 +16,21 @@ Route::get('/', function () {
     return view('welcome', compact('films', 'schedules'));
 });
 
-Route::middleware('auth')->group(function () {
+Route::middleware(['auth', 'user'])->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
     Route::get('/booking/seats/{schedule}', [BookingController::class, 'selectSeats'])->name('booking.seats');
     Route::post('/booking/confirm/{schedule}', [BookingController::class, 'confirm'])->name('booking.confirm');
+    
+    // Payment Routes
+    Route::get('/pembayaran/{order_id}', [App\Http\Controllers\PaymentController::class, 'show'])->name('payment.show');
+    Route::post('/pembayaran/process/{order_id}', [App\Http\Controllers\PaymentController::class, 'process'])->name('payment.process');
+    Route::post('/pembayaran/simulate/{order_id}', [App\Http\Controllers\PaymentController::class, 'simulate'])->name('payment.simulate');
+    
+    // E-Ticket
+    Route::get('/tiket-saya', [App\Http\Controllers\ETicketController::class, 'index'])->name('eticket.index');
+    Route::get('/e-ticket/{order_id}', [App\Http\Controllers\ETicketController::class, 'show'])->name('eticket.show');
 });
 
 // Route khusus admin
@@ -30,6 +39,8 @@ Route::middleware(['auth', 'admin'])
     ->name('admin.')
     ->group(function () {
         Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('dashboard');
+        Route::get('/preview', [AdminController::class, 'previewHome'])->name('preview');
+        Route::get('/preview/films/{film}', [AdminController::class, 'previewFilm'])->name('preview.films.show');
         Route::resource('films', FilmController::class);
         Route::resource('schedules', ScheduleController::class);
     });
