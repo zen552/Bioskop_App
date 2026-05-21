@@ -5,56 +5,54 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pilih Kursi — {{ $film->judul }}</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet">
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
         body {
-            font-family: 'DM Sans', sans-serif;
-            background: #0d0c10;
+            font-family: 'Inter', sans-serif;
+            background: #0f0f13;
             color: #e8e6f0;
             min-height: 100vh;
         }
 
-        /* ── Navbar ── */
+        /* ── Navbar (matched to detail.blade.php) ── */
         .navbar {
             position: sticky;
             top: 0;
             z-index: 50;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 16px 28px;
-            background: rgba(13, 12, 16, 0.85);
+            padding: 16px 24px;
+            background: rgba(15, 15, 19, 0.80);
             backdrop-filter: blur(12px);
             -webkit-backdrop-filter: blur(12px);
             border-bottom: 1px solid rgba(255, 255, 255, 0.05);
         }
 
+        .navbar-inner {
+            max-width: 896px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 16px;
+        }
+
         .brand {
-            font-family: 'DM Serif Display', serif;
             font-size: 18px;
-            letter-spacing: 0.02em;
-            color: #c9b8ff;
+            font-weight: 600;
+            letter-spacing: -0.01em;
+            color: #fff;
             text-decoration: none;
         }
 
-        .user-chip {
-            font-size: 11px;
-            color: #8a849a;
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            padding: 5px 14px;
-            border-radius: 20px;
-        }
+        .brand span { color: #818cf8; } /* indigo-400 */
 
-        .user-chip span { color: #e8e6f0; font-weight: 500; }
+
 
         /* ── Layout ── */
         .main {
-            max-width: 860px;
+            max-width: 896px;
             margin: 0 auto;
             padding: 32px 24px 64px;
         }
@@ -65,17 +63,17 @@
             gap: 6px;
             font-size: 11px;
             font-weight: 500;
-            color: #7a748a;
-            background: rgba(255, 255, 255, 0.04);
-            border: 1px solid rgba(255, 255, 255, 0.08);
+            color: #6b7280;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.10);
             padding: 7px 14px;
-            border-radius: 20px;
+            border-radius: 9999px;
             text-decoration: none;
             transition: all 0.18s ease;
             margin-bottom: 28px;
         }
 
-        .back-link:hover { background: rgba(255, 255, 255, 0.08); color: #e8e6f0; }
+        .back-link:hover { background: rgba(255, 255, 255, 0.09); color: #fff; }
 
         /* ── Film Card ── */
         .film-card {
@@ -84,50 +82,52 @@
             align-items: flex-start;
             gap: 16px;
             flex-wrap: wrap;
-            background: linear-gradient(135deg, rgba(138, 103, 211, 0.12), rgba(96, 70, 168, 0.05));
-            border: 1px solid rgba(138, 103, 211, 0.2);
-            border-radius: 14px;
+            background: #16161d;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 16px;
             padding: 22px 26px;
             margin-bottom: 24px;
         }
 
         .film-label {
             font-size: 10px;
-            letter-spacing: 0.15em;
-            color: #9b7de8;
+            letter-spacing: 0.35em;
+            color: #818cf8; /* indigo-400 */
             text-transform: uppercase;
             font-weight: 500;
             margin-bottom: 6px;
         }
 
         .film-title {
-            font-family: 'DM Serif Display', serif;
             font-size: 24px;
-            color: #f0eeff;
+            font-weight: 700;
+            color: #fff;
             margin-bottom: 5px;
-            line-height: 1.2;
+            line-height: 1.25;
+            letter-spacing: -0.01em;
         }
 
-        .film-sub { font-size: 12px; color: #7a748a; }
-        .film-sub .time { color: #f5c76b; font-weight: 500; }
+        .film-sub { font-size: 12px; color: #6b7280; }
+        .film-sub .time { color: #fbbf24; font-weight: 600; } /* amber-400 */
 
         .studio-wrap { text-align: right; }
-        .studio-label { font-size: 10px; color: #5a5568; margin-bottom: 5px; }
+        .studio-label { font-size: 10px; color: #4b5563; margin-bottom: 5px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.1em; }
 
         .studio-badge {
             background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.10);
+            border-radius: 9999px;
             padding: 7px 16px;
             font-size: 12px;
-            color: #b0aac0;
+            font-weight: 500;
+            color: #d1d5db;
         }
 
         /* ── Theater Area ── */
         .theater-area {
-            background: rgba(255, 255, 255, 0.02);
+            background: #16161d;
             border: 1px solid rgba(255, 255, 255, 0.05);
-            border-radius: 14px;
+            border-radius: 16px;
             padding: 32px 24px;
             margin-bottom: 20px;
         }
@@ -140,7 +140,7 @@
 
         .screen-bar {
             height: 3px;
-            background: linear-gradient(90deg, transparent, rgba(138,103,211,0.55), rgba(138,103,211,0.9), rgba(138,103,211,0.55), transparent);
+            background: linear-gradient(90deg, transparent, rgba(99,102,241,0.5), rgba(99,102,241,0.9), rgba(99,102,241,0.5), transparent);
             border-radius: 2px;
             margin: 0 auto 0;
             width: 78%;
@@ -149,7 +149,7 @@
 
         .screen-glow {
             height: 44px;
-            background: linear-gradient(to bottom, rgba(138, 103, 211, 0.08), transparent);
+            background: linear-gradient(to bottom, rgba(99, 102, 241, 0.08), transparent);
             margin: 0 auto;
             width: 78%;
             max-width: 360px;
@@ -159,9 +159,9 @@
         .screen-text {
             font-size: 10px;
             letter-spacing: 0.25em;
-            color: rgba(138, 103, 211, 0.5);
+            color: rgba(99, 102, 241, 0.55);
             text-transform: uppercase;
-            font-weight: 500;
+            font-weight: 600;
             position: absolute;
             top: 14px;
             left: 50%;
@@ -183,8 +183,8 @@
         .row-label {
             width: 16px;
             font-size: 10px;
-            color: #4a4558;
-            font-weight: 500;
+            color: #374151;
+            font-weight: 600;
             text-align: center;
             flex-shrink: 0;
         }
@@ -202,12 +202,12 @@
             width: 100%;
             height: 30px;
             border-radius: 6px 6px 3px 3px;
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            background: rgba(255, 255, 255, 0.04);
-            color: #6b6480;
+            border: 1px solid rgba(255, 255, 255, 0.07);
+            background: rgba(255, 255, 255, 0.03);
+            color: #4b5563;
             font-size: 9px;
-            font-weight: 500;
-            font-family: 'DM Sans', sans-serif;
+            font-weight: 600;
+            font-family: 'Inter', sans-serif;
             cursor: pointer;
             transition: all 0.18s ease;
             display: flex;
@@ -223,28 +223,28 @@
             left: 5px;
             right: 5px;
             height: 2px;
-            background: rgba(255, 255, 255, 0.05);
+            background: rgba(255, 255, 255, 0.04);
             border-radius: 1px;
         }
 
         .seat-btn:hover:not(:disabled) {
-            background: rgba(138, 103, 211, 0.15);
-            border-color: rgba(138, 103, 211, 0.35);
-            color: #c9b8ff;
+            background: rgba(99, 102, 241, 0.15);
+            border-color: rgba(99, 102, 241, 0.40);
+            color: #a5b4fc;
         }
 
         .seat-btn.selected {
-            background: rgba(138, 103, 211, 0.85);
-            border-color: rgba(160, 130, 230, 0.8);
+            background: rgba(99, 102, 241, 0.80);
+            border-color: rgba(129, 140, 248, 0.80);
             color: #fff;
         }
 
-        .seat-btn.selected::after { background: rgba(255, 255, 255, 0.18); }
+        .seat-btn.selected::after { background: rgba(255, 255, 255, 0.15); }
 
         .seat-btn:disabled {
             background: rgba(255, 255, 255, 0.02);
             border-color: rgba(255, 255, 255, 0.04);
-            color: rgba(255, 255, 255, 0.08);
+            color: rgba(255, 255, 255, 0.07);
             cursor: not-allowed;
         }
 
@@ -264,7 +264,8 @@
             align-items: center;
             gap: 7px;
             font-size: 11px;
-            color: #7a748a;
+            font-weight: 500;
+            color: #6b7280;
         }
 
         .leg-dot {
@@ -273,15 +274,15 @@
             border-radius: 3px 3px 1px 1px;
         }
 
-        .leg-avail { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); }
-        .leg-sel   { background: rgba(138,103,211,0.85); border: 1px solid rgba(160,130,230,0.8); }
+        .leg-avail { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.07); }
+        .leg-sel   { background: rgba(99,102,241,0.80); border: 1px solid rgba(129,140,248,0.80); }
         .leg-taken { background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.04); opacity: 0.4; }
 
         /* ── Checkout Bar ── */
         .checkout {
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(255, 255, 255, 0.07);
-            border-radius: 14px;
+            background: #16161d;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 16px;
             padding: 20px 26px;
             display: flex;
             justify-content: space-between;
@@ -292,7 +293,8 @@
 
         .seats-label {
             font-size: 10px;
-            color: #5a5568;
+            font-weight: 500;
+            color: #4b5563;
             text-transform: uppercase;
             letter-spacing: 0.1em;
             margin-bottom: 6px;
@@ -301,17 +303,18 @@
         .seats-text {
             font-size: 13px;
             font-weight: 500;
-            color: #e8e6f0;
+            color: #f3f4f6;
             min-height: 20px;
         }
 
-        .seats-text.empty { color: #4a4558; }
+        .seats-text.empty { color: #374151; }
 
         .checkout-right { display: flex; align-items: center; gap: 24px; }
 
         .price-label {
             font-size: 10px;
-            color: #5a5568;
+            font-weight: 500;
+            color: #4b5563;
             text-align: right;
             text-transform: uppercase;
             letter-spacing: 0.1em;
@@ -319,37 +322,36 @@
         }
 
         .price-val {
-            font-family: 'DM Serif Display', serif;
-            font-size: 26px;
-            color: #7fcda0;
+            font-size: 24px;
+            font-weight: 700;
+            color: #34d399; /* emerald-400, matched to detail.blade.php price color */
             text-align: right;
+            letter-spacing: -0.01em;
         }
 
         .confirm-btn {
-            background: linear-gradient(135deg, #7c55d4, #9b7de8);
+            background: #4f46e5; /* indigo-600 */
             color: #fff;
             border: none;
             padding: 13px 26px;
-            border-radius: 24px;
+            border-radius: 9999px;
             font-size: 12px;
             font-weight: 500;
-            font-family: 'DM Sans', sans-serif;
-            letter-spacing: 0.02em;
+            font-family: 'Inter', sans-serif;
+            letter-spacing: 0.01em;
             cursor: pointer;
             transition: all 0.2s ease;
             white-space: nowrap;
-            box-shadow: 0 6px 20px rgba(124, 85, 212, 0.3);
         }
 
         .confirm-btn:disabled {
             opacity: 0.35;
             cursor: not-allowed;
-            box-shadow: none;
         }
 
         .confirm-btn:not(:disabled):hover {
+            background: #4338ca; /* indigo-700 */
             transform: translateY(-1px);
-            box-shadow: 0 10px 28px rgba(124, 85, 212, 0.45);
         }
 
         @media (max-width: 600px) {
@@ -362,11 +364,24 @@
 </head>
 <body>
 
-    {{-- Navbar --}}
+    {{-- Navbar (matched to detail.blade.php) --}}
     <nav class="navbar">
-        <a href="{{ url('/') }}" class="brand">🎬 BioskopKu</a>
-        <div class="user-chip">
-            Masuk sebagai: <span>{{ Auth::user()->name ?? 'Tamu' }}</span>
+        <div class="navbar-inner">
+            <a href="{{ url('/') }}" class="brand">
+                <span>Bioskop</span>Ku
+            </a>
+            <div style="display:flex; flex-wrap:wrap; align-items:center; gap:8px;">
+                <a href="{{ route('eticket.index') }}"
+                    class="rounded-full border border-indigo-500/30 bg-indigo-600/20 px-4 py-2 text-xs font-medium text-indigo-300 transition hover:bg-indigo-600/35">
+                    Tiket Saya
+                </a>
+                <form method="POST" action="{{ route('logout') }}">
+                    @csrf
+                    <button class="rounded-full border border-white/10 bg-white/5 px-4 py-2 text-xs font-medium text-gray-300 transition hover:bg-white/10">
+                        Keluar
+                    </button>
+                </form>
+            </div>
         </div>
     </nav>
 
