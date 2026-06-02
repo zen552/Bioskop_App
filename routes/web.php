@@ -36,6 +36,7 @@ Route::middleware(['auth', 'admin'])
         Route::get('/preview', [AdminController::class, 'previewHome'])->name('preview');
         Route::get('/preview/films/{film}', [AdminController::class, 'previewFilm'])->name('preview.films.show');
         Route::resource('films', FilmController::class);
+        Route::post('/genres', [FilmController::class, 'storeGenre'])->name('genres.store');
         Route::resource('schedules', ScheduleController::class);
     });
 
