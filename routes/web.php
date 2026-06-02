@@ -6,15 +6,9 @@ use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Admin\FilmController;
 use App\Http\Controllers\Admin\ScheduleController;
 use App\Http\Controllers\BookingController;
+use App\Http\Controllers\HomeController;
 
-Route::get('/', function () {
-    $films = \App\Models\Film::latest()->get();
-    $schedules = \App\Models\Schedule::with('film')
-        ->whereDate('tanggal', today())
-        ->orderBy('jam_tayang')
-        ->get();
-    return view('welcome', compact('films', 'schedules'));
-});
+Route::get('/', [HomeController::class, 'index'])->name('home');
 
 Route::middleware(['auth', 'user'])->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

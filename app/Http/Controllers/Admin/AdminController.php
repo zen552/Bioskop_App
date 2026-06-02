@@ -21,19 +21,9 @@ class AdminController extends Controller
         ));
     }
 
-    public function previewHome()
+    public function previewHome(\Illuminate\Http\Request $request)
     {
-        $films = Film::latest()->get();
-        $schedules = Schedule::with('film')
-            ->whereDate('tanggal', today())
-            ->orderBy('jam_tayang')
-            ->get();
-
-        return view('welcome', [
-            'films' => $films,
-            'schedules' => $schedules,
-            'previewMode' => true,
-        ]);
+        return app(\App\Http\Controllers\HomeController::class)->getHomeView($request, true);
     }
 
     public function previewFilm(Film $film)

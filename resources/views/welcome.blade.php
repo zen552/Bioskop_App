@@ -14,6 +14,14 @@
     $isAdminViewer = auth()->check() && auth()->user()->isAdmin();
     $previewMode = ($previewMode ?? false) || $isAdminViewer;
     $homeUrl = $previewMode ? route('admin.preview') : url('/');
+
+    $allGenres = $allGenres ?? collect();
+    $allStudios = $allStudios ?? collect();
+    $search = $search ?? null;
+    $genre = $genre ?? null;
+    $duration = $duration ?? null;
+    $dateFilter = $dateFilter ?? null;
+    $studio = $studio ?? null;
 @endphp
 <body class="bg-[#0f0f13] text-white min-h-screen">
     <nav class="sticky top-0 z-50 border-b border-white/5 bg-[#0f0f13]/80 px-6 py-4 backdrop-blur-md">
@@ -105,6 +113,97 @@
         @endauth
     </section>
 
+    <!-- Search & Filter Section -->
+    <form method="GET" action="{{ request()->url() }}" class="mx-auto max-w-6xl px-6 mb-12">
+        <div class="rounded-3xl border border-white/5 bg-[#16161d]/60 p-6 backdrop-blur-md shadow-2xl">
+            <!-- Grid Filter -->
+            <div class="grid grid-cols-1 gap-6 lg:grid-cols-2">
+                
+                <!-- Bagian Filter Film -->
+                <div class="space-y-4">
+                    <div class="flex items-center gap-2">
+                        <div class="h-4 w-1 rounded-full bg-indigo-500"></div>
+                        <h4 class="text-xs font-semibold uppercase tracking-wider text-indigo-300">Pencarian & Filter Film</h4>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 gap-3 sm:grid-cols-3">
+                        <!-- Search Input -->
+                        <div class="relative">
+                            <input type="text" name="search" value="{{ $search }}" placeholder="Cari judul film..." 
+                                   class="w-full rounded-xl border border-white/10 bg-[#0f0f13] py-2.5 pl-9 pr-4 text-xs text-white placeholder-gray-500 transition-colors focus:border-indigo-500 focus:outline-none">
+                            <div class="absolute inset-y-0 left-3 flex items-center pointer-events-none text-gray-500">
+                                <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                                </svg>
+                            </div>
+                        </div>
+                        
+                        <!-- Genre Dropdown -->
+                        <div>
+                            <select name="genre" class="w-full rounded-xl border border-white/10 bg-[#0f0f13] px-3 py-2.5 text-xs text-white placeholder-gray-500 transition-colors focus:border-indigo-500 focus:outline-none">
+                                <option value="">Semua Genre</option>
+                                @foreach($allGenres as $g)
+                                    <option value="{{ $g }}" {{ $genre == $g ? 'selected' : '' }}>{{ $g }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        
+                        <!-- Durasi Dropdown -->
+                        <div>
+                            <select name="duration" class="w-full rounded-xl border border-white/10 bg-[#0f0f13] px-3 py-2.5 text-xs text-white placeholder-gray-500 transition-colors focus:border-indigo-500 focus:outline-none">
+                                <option value="">Semua Durasi</option>
+                                <option value="short" {{ $duration == 'short' ? 'selected' : '' }}>Singkat (< 90 mnt)</option>
+                                <option value="medium" {{ $duration == 'medium' ? 'selected' : '' }}>Sedang (90-120 mnt)</option>
+                                <option value="long" {{ $duration == 'long' ? 'selected' : '' }}>Lama (> 120 mnt)</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Bagian Filter Jadwal Tayang -->
+                <div class="space-y-4">
+                    <div class="flex items-center gap-2">
+                        <div class="h-4 w-1 rounded-full bg-amber-500"></div>
+                        <h4 class="text-xs font-semibold uppercase tracking-wider text-amber-300">Filter Jadwal Tayang</h4>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                        <!-- Date Picker -->
+                        <div>
+                            <input type="date" name="date" value="{{ $dateFilter }}" 
+                                   class="w-full rounded-xl border border-white/10 bg-[#0f0f13] px-3 py-2.5 text-xs text-white placeholder-gray-500 transition-colors focus:border-amber-500 focus:outline-none">
+                        </div>
+                        
+                        <!-- Studio Dropdown -->
+                        <div>
+                            <select name="studio" class="w-full rounded-xl border border-white/10 bg-[#0f0f13] px-3 py-2.5 text-xs text-white placeholder-gray-500 transition-colors focus:border-amber-500 focus:outline-none">
+                                <option value="">Semua Studio</option>
+                                @foreach($allStudios as $st)
+                                    <option value="{{ $st }}" {{ $studio == $st ? 'selected' : '' }}>{{ $st }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+            
+            <!-- Baris Tombol Aksi -->
+            <div class="mt-6 flex flex-wrap items-center justify-end gap-3 border-t border-white/5 pt-4">
+                @if($search || $genre || $duration || $dateFilter || $studio)
+                    <a href="{{ $previewMode ? route('admin.preview') : url('/') }}" 
+                       class="rounded-xl border border-white/10 bg-white/5 px-5 py-2 text-xs font-semibold text-gray-400 transition hover:bg-white/10 hover:text-white">
+                        Reset Filter
+                    </a>
+                @endif
+                <button type="submit" 
+                        class="rounded-xl bg-indigo-600 px-6 py-2 text-xs font-semibold text-white transition hover:bg-indigo-500 shadow-md shadow-indigo-950/50">
+                    Terapkan Filter
+                </button>
+            </div>
+        </div>
+    </form>
+
     <main class="mx-auto max-w-6xl px-6 pb-20">
         <section class="mb-16">
             <div class="mb-8 flex items-center gap-3">
@@ -135,14 +234,28 @@
                     @endforeach
                 </div>
             @else
-                <div class="py-16 text-center text-sm text-gray-600">Belum ada film tersedia.</div>
+                <div class="py-16 text-center">
+                    <svg class="mx-auto h-12 w-12 text-gray-600 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M7 4v16M17 4v16M3 8h4m10 0h4M3 12h18M3 16h4m10 0h4M4 20h16a1 1 0 001-1V5a1 1 0 00-1-1H4a1 1 0 00-1 1v14a1 1 0 001 1z" />
+                    </svg>
+                    <p class="text-sm text-gray-500">Tidak ada film yang cocok dengan pencarian atau filter Anda.</p>
+                    <p class="text-xs text-gray-600 mt-1">Coba gunakan kata kunci pencarian lain atau atur ulang filter Anda.</p>
+                </div>
             @endif
         </section>
 
         <section>
             <div class="mb-8 flex items-center gap-3">
                 <div class="h-5 w-1 rounded-full bg-amber-500"></div>
-                <h3 class="text-base font-semibold tracking-tight text-white">Jadwal Tayang Hari Ini</h3>
+                <h3 class="text-base font-semibold tracking-tight text-white">
+                    @if($dateFilter === today()->toDateString())
+                        Jadwal Tayang Hari Ini
+                    @elseif($dateFilter)
+                        Jadwal Tayang: {{ \Carbon\Carbon::parse($dateFilter)->translatedFormat('d F Y') }}
+                    @else
+                        Semua Jadwal Tayang Mendatang
+                    @endif
+                </h3>
             </div>
 
             @if($schedules->count())
@@ -152,6 +265,7 @@
                             <tr class="bg-white/[0.03] text-left text-xs uppercase tracking-wider text-gray-500">
                                 <th class="px-5 py-4 font-medium">Film</th>
                                 <th class="px-5 py-4 font-medium">Studio</th>
+                                <th class="px-5 py-4 font-medium">Tanggal</th>
                                 <th class="px-5 py-4 font-medium">Jam</th>
                                 <th class="px-5 py-4 font-medium">Harga</th>
                             </tr>
@@ -161,6 +275,7 @@
                                 <tr class="{{ $index % 2 === 0 ? 'bg-white/[0.01]' : '' }} border-t border-white/5 transition hover:bg-indigo-500/5">
                                     <td class="px-5 py-4 font-medium text-white">{{ $schedule->film->judul }}</td>
                                     <td class="px-5 py-4 text-gray-500">{{ $schedule->studio }}</td>
+                                    <td class="px-5 py-4 text-gray-400 text-xs">{{ \Carbon\Carbon::parse($schedule->tanggal)->translatedFormat('d M Y') }}</td>
                                     <td class="px-5 py-4 text-amber-400 font-semibold">{{ \Carbon\Carbon::parse($schedule->jam_tayang)->format('H:i') }}</td>
                                     <td class="px-5 py-4 text-emerald-400 font-semibold">Rp {{ number_format($schedule->harga, 0, ',', '.') }}</td>
                                 </tr>
@@ -169,8 +284,12 @@
                     </table>
                 </div>
             @else
-                <div class="rounded-2xl border border-white/5 py-16 text-center text-sm text-gray-600">
-                    Tidak ada jadwal tayang hari ini.
+                <div class="rounded-2xl border border-white/5 py-16 text-center">
+                    <svg class="mx-auto h-12 w-12 text-gray-600 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                    </svg>
+                    <p class="text-sm text-gray-500">Tidak ada jadwal tayang.</p>
+                    <p class="text-xs text-gray-600 mt-1">Silakan pilih tanggal lain atau bersihkan penyaringan studio.</p>
                 </div>
             @endif
         </section>
