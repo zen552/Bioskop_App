@@ -18,7 +18,7 @@
 @endphp
 <body class="min-h-screen bg-[#0f0f13] text-slate-100">
     <div class="min-h-screen lg:flex">
-        <aside class="hidden w-72 shrink-0 border-r border-white/5 bg-[#16161d] lg:flex lg:flex-col">
+        <aside class="hidden w-72 shrink-0 border-r border-white/5 bg-[#16161d] lg:flex lg:flex-col sticky top-0 h-screen overflow-y-auto">
             <div class="border-b border-white/5 px-6 py-6">
                 <p class="text-xs font-semibold uppercase tracking-[0.3em] text-indigo-300">Admin Panel</p>
                 <h1 class="mt-2 text-2xl font-bold text-white">BioskopKu</h1>

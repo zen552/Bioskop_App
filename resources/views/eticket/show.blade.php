@@ -100,7 +100,7 @@
                         {!! $qrCode !!}
                     </div>
                     <p class="text-xs text-center text-gray-400 max-w-[160px]">
-                        Tunjukkan QR Code ini kepada petugas studio.
+                        Tunjukkan QR Code ini kepada petugas studio atau scan di mesin.
                     </p>
                 </div>
             </div>
