@@ -14,7 +14,7 @@
         </div>
 
         <div class="mb-4" x-data="multiselectData({
-            selected: {{ json_encode(old('genre', $film->genre ? array_map('trim', explode(',', $film->genre)) : [])) }},
+            selected: {{ json_encode(old('genre', $film->genre ? array_map('trim', preg_split('/[\/,]/', $film->genre)) : [])) }},
             availableGenres: {{ json_encode($genres->pluck('name')->toArray()) }},
             storeRoute: '{{ route('admin.genres.store') }}',
             csrfToken: '{{ csrf_token() }}'

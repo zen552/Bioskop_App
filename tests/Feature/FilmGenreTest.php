@@ -83,7 +83,7 @@ class FilmGenreTest extends TestCase
         // Cek apakah data tersimpan di database dalam format string terpisah koma
         $film = Film::where('judul', 'Inception')->first();
         $this->assertNotNull($film);
-        $this->assertEquals('Action, Thriller, Sci-Fi', $film->genre);
+        $this->assertEquals('Action / Thriller / Sci-Fi', $film->genre);
     }
 
     /**
@@ -110,6 +110,41 @@ class FilmGenreTest extends TestCase
 
         $film->refresh();
         $this->assertEquals('Inception Updated', $film->judul);
-        $this->assertEquals('Sci-Fi, Adventure', $film->genre);
+        $this->assertEquals('Sci-Fi / Adventure', $film->genre);
+    }
+
+    /**
+     * Test visitors can filter films on home page by multiple genres.
+     */
+    public function test_user_can_filter_films_by_multiple_genres(): void
+    {
+        $film1 = Film::create([
+            'judul' => 'Action Movie',
+            'genre' => 'Action / Adventure',
+            'durasi' => 120,
+            'deskripsi' => 'An action packed movie.',
+        ]);
+
+        $film2 = Film::create([
+            'judul' => 'Comedy Movie',
+            'genre' => 'Comedy / Romance',
+            'durasi' => 100,
+            'deskripsi' => 'A funny movie.',
+        ]);
+
+        $film3 = Film::create([
+            'judul' => 'Drama Movie',
+            'genre' => 'Drama',
+            'durasi' => 110,
+            'deskripsi' => 'A serious movie.',
+        ]);
+
+        // Request with action and comedy filters
+        $response = $this->get(route('home', ['genre' => ['Action', 'Comedy']]));
+
+        $response->assertStatus(200);
+        $response->assertSee('Action Movie');
+        $response->assertSee('Comedy Movie');
+        $response->assertDontSee('Drama Movie');
     }
 }

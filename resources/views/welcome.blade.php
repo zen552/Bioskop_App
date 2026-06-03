@@ -139,13 +139,33 @@
                         </div>
                         
                         <!-- Genre Dropdown -->
-                        <div>
-                            <select name="genre" class="w-full rounded-xl border border-white/10 bg-[#0f0f13] px-3 py-2.5 text-xs text-white placeholder-gray-500 transition-colors focus:border-indigo-500 focus:outline-none">
-                                <option value="">Semua Genre</option>
+                        <div class="relative" x-data="{ open: false, selected: {{ json_encode(is_array($genre) ? $genre : ($genre ? [$genre] : [])) }} }">
+                            <button type="button" @click="open = !open" @click.away="open = false"
+                                    class="w-full min-h-[38px] rounded-xl border border-white/10 bg-[#0f0f13] px-3 py-2.5 text-xs text-white flex items-center justify-between focus:outline-none focus:border-indigo-500 cursor-pointer">
+                                <span class="truncate pr-2" x-text="selected.length === 0 ? 'Semua Genre' : (selected.length === 1 ? selected[0] : selected.length + ' Genre dipilih')">Semua Genre</span>
+                                <svg class="w-3.5 h-3.5 text-gray-400 shrink-0 transition-transform duration-200" :class="{'rotate-180': open}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                                </svg>
+                            </button>
+                            
+                            <div x-show="open" 
+                                 x-transition:enter="transition ease-out duration-100"
+                                 x-transition:enter-start="opacity-0 scale-95"
+                                 x-transition:enter-end="opacity-100 scale-100"
+                                 x-transition:leave="transition ease-in duration-75"
+                                 x-transition:leave-start="opacity-100 scale-100"
+                                 x-transition:leave-end="opacity-0 scale-95"
+                                 class="absolute z-50 mt-2 w-full rounded-2xl border border-white/10 bg-[#16161d] shadow-2xl p-3 space-y-1 max-h-60 overflow-y-auto scrollbar-thin scrollbar-thumb-white/10"
+                                 style="display: none;">
                                 @foreach($allGenres as $g)
-                                    <option value="{{ $g }}" {{ $genre == $g ? 'selected' : '' }}>{{ $g }}</option>
+                                    <label class="flex items-center gap-2 px-2 py-1.5 rounded-lg hover:bg-white/5 cursor-pointer text-xs text-gray-300 transition-colors">
+                                        <input type="checkbox" name="genre[]" value="{{ $g }}" 
+                                               x-model="selected"
+                                               class="rounded border-white/10 bg-[#0f0f13] text-indigo-600 focus:ring-indigo-500 focus:ring-offset-[#16161d]">
+                                        <span>{{ $g }}</span>
+                                    </label>
                                 @endforeach
-                            </select>
+                            </div>
                         </div>
                         
                         <!-- Durasi Dropdown -->

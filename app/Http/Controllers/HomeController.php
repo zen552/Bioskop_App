@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Film;
 use App\Models\Schedule;
+use App\Models\Genre;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 
@@ -35,7 +36,20 @@ class HomeController extends Controller
         }
 
         if ($genre) {
-            $filmQuery->where('genre', 'like', "%{$genre}%");
+            if (is_array($genre)) {
+                $genre = array_filter($genre);
+            }
+            if (!empty($genre)) {
+                $filmQuery->where(function ($q) use ($genre) {
+                    if (is_array($genre)) {
+                        foreach ($genre as $g) {
+                            $q->orWhere('genre', 'like', "%{$g}%");
+                        }
+                    } else {
+                        $q->where('genre', 'like', "%{$genre}%");
+                    }
+                });
+            }
         }
 
         if ($duration) {
@@ -78,9 +92,22 @@ class HomeController extends Controller
         }
 
         if ($genre) {
-            $scheduleQuery->whereHas('film', function ($q) use ($genre) {
-                $q->where('genre', 'like', "%{$genre}%");
-            });
+            if (is_array($genre)) {
+                $genre = array_filter($genre);
+            }
+            if (!empty($genre)) {
+                $scheduleQuery->whereHas('film', function ($q) use ($genre) {
+                    $q->where(function ($q2) use ($genre) {
+                        if (is_array($genre)) {
+                            foreach ($genre as $g) {
+                                $q2->orWhere('genre', 'like', "%{$g}%");
+                            }
+                        } else {
+                            $q2->where('genre', 'like', "%{$genre}%");
+                        }
+                    });
+                });
+            }
         }
 
         $schedules = $scheduleQuery->orderBy('tanggal')
@@ -88,15 +115,7 @@ class HomeController extends Controller
             ->get();
 
         // 4. Dapatkan opsi unik untuk dropdown filter
-        $allGenres = Film::pluck('genre')
-            ->flatMap(function ($g) {
-                // Split genre yang digabung dengan / atau ,
-                $splits = preg_split('/[\/,]/', $g);
-                return array_map('trim', $splits);
-            })
-            ->filter()
-            ->unique()
-            ->values();
+        $allGenres = Genre::orderBy('name')->pluck('name');
 
         $allStudios = Schedule::distinct()->pluck('studio')->filter()->values();
 

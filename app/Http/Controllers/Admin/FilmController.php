@@ -33,7 +33,7 @@ class FilmController extends Controller
         ]);
 
         $data = $request->only(['judul', 'durasi', 'deskripsi']);
-        $data['genre'] = implode(', ', $request->input('genre'));
+        $data['genre'] = implode(' / ', $request->input('genre'));
 
         if ($request->hasFile('poster')) {
             $data['poster'] = $request->file('poster')->store('posters', 'public');
@@ -61,7 +61,7 @@ class FilmController extends Controller
         ]);
 
         $data = $request->only(['judul', 'durasi', 'deskripsi']);
-        $data['genre'] = implode(', ', $request->input('genre'));
+        $data['genre'] = implode(' / ', $request->input('genre'));
 
         if ($request->hasFile('poster')) {
             $data['poster'] = $request->file('poster')->store('posters', 'public');

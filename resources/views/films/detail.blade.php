@@ -96,9 +96,11 @@
                 <p class="mb-2 text-xs font-medium uppercase tracking-[0.35em] text-indigo-400">Detail Film</p>
                 <h1 class="mb-3 text-2xl font-bold leading-snug text-white sm:text-3xl">{{ $film->judul }}</h1>
                 <div class="mb-4 flex flex-wrap gap-2">
-                    <span class="rounded-full border border-indigo-500/30 bg-indigo-600/20 px-3 py-1 text-xs text-indigo-300">
-                        {{ $film->genre }}
-                    </span>
+                    @foreach(array_filter(array_map('trim', preg_split('/[\/,]/', $film->genre))) as $g)
+                        <span class="rounded-full border border-indigo-500/30 bg-indigo-600/20 px-3 py-1 text-xs text-indigo-300">
+                            {{ $g }}
+                        </span>
+                    @endforeach
                     <span class="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs text-gray-400">
                         {{ $film->durasi }} menit
                     </span>
