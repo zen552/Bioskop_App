@@ -1,11 +1,4 @@
 <x-guest-layout>
-    <div class="mb-6 text-center">
-        <h1 class="text-2xl font-bold text-white">Reset Password</h1>
-        <p class="mt-2 text-sm text-gray-400">
-            Masukkan kata sandi baru Anda untuk melanjutkan.
-        </p>
-    </div>
-
     <form method="POST" action="{{ route('password.store') }}">
         @csrf
 
@@ -37,7 +30,7 @@
             <x-input-error :messages="$errors->get('password_confirmation')" class="mt-2" />
         </div>
 
-        <div class="flex items-center justify-end mt-6">
+        <div class="flex items-center justify-end mt-4">
             <x-primary-button>
                 {{ __('Reset Password') }}
             </x-primary-button>
