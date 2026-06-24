@@ -85,13 +85,28 @@
         </div>
 
         <!-- CTA -->
-        <form action="{{ route('payment.process', $order_id) }}" method="POST">
-            @csrf
-            <button type="submit"
-                    class="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-semibold py-3 rounded-xl transition text-sm">
-                Lanjutkan ke Pembayaran →
-            </button>
-        </form>
+        @if(session('error'))
+            <div class="bg-red-500/10 border border-red-500/50 text-red-500 text-sm p-4 rounded-xl mb-4">
+                {{ session('error') }}
+            </div>
+        @endif
+        <div class="flex flex-col gap-3">
+            <form action="{{ route('payment.process', $order_id) }}" method="POST">
+                @csrf
+                <button type="submit"
+                        class="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-semibold py-3 rounded-xl transition text-sm">
+                    Lanjutkan ke Pembayaran →
+                </button>
+            </form>
+
+            <form action="{{ route('payment.cancel', $order_id) }}" method="POST">
+                @csrf
+                <button type="submit" onclick="return confirm('Apakah Anda yakin ingin membatalkan pesanan ini? Kursi akan dilepas kembali.')"
+                        class="w-full bg-transparent border border-red-500/30 hover:bg-red-500/10 text-red-400 font-semibold py-3 rounded-xl transition text-sm">
+                    Batalkan Pesanan
+                </button>
+            </form>
+        </div>
 
     </div>
 

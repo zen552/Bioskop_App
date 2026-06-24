@@ -26,6 +26,7 @@ Route::middleware(['auth', 'user'])->group(function () {
     Route::get('/pembayaran/{order_id}', [PaymentController::class, 'show'])->name('payment.show');
     Route::post('/pembayaran/process/{order_id}', [PaymentController::class, 'process'])->name('payment.process');
     Route::post('/pembayaran/simulate/{order_id}', [PaymentController::class, 'simulate'])->name('payment.simulate');
+    Route::post('/pembayaran/cancel/{order_id}', [PaymentController::class, 'cancel'])->name('payment.cancel');
     
     // Midtrans Checkout Routes (New from Rai)
     Route::any('/payment/checkout', [PaymentController::class, 'createTransaction'])->name('payment.checkout');

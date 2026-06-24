@@ -32,97 +32,42 @@
             <h1 class="text-2xl font-bold text-white">Pilih Metode Pembayaran</h1>
         </div>
 
-        <div class="flex flex-col md:flex-row gap-6">
+        <div class="flex flex-col md:flex-row gap-6 justify-center">
 
-            <!-- Panel Kiri: Metode Pembayaran -->
-            <div class="w-full md:w-2/3 bg-[#16161d] border border-white/5 rounded-2xl overflow-hidden">
-
-                <div class="p-6 border-b border-white/5">
-                    <p class="text-xs text-gray-500 uppercase tracking-widest mb-1">Metode</p>
-                    <p class="font-semibold text-white">Pilih salah satu opsi pembayaran</p>
-                </div>
-
-                <!-- Opsi Bank -->
-                <div class="border-b border-white/5">
-                    <button disabled class="w-full text-left px-6 py-4 flex justify-between items-center opacity-35 cursor-not-allowed">
-                        <div class="flex items-center gap-4">
-                            <div class="w-12 h-8 bg-blue-900/40 border border-blue-500/20 rounded flex items-center justify-center font-bold text-blue-400 text-xs">BCA</div>
-                            <span class="text-gray-200 text-sm">BCA Virtual Account</span>
-                        </div>
-                        <svg class="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
-                    </button>
-                </div>
-
-                <div class="border-b border-white/5">
-                    <button disabled class="w-full text-left px-6 py-4 flex justify-between items-center opacity-35 cursor-not-allowed">
-                        <div class="flex items-center gap-4">
-                            <div class="w-12 h-8 bg-orange-900/40 border border-orange-500/20 rounded flex items-center justify-center font-bold text-orange-400 text-xs">BNI</div>
-                            <span class="text-gray-200 text-sm">BNI Virtual Account</span>
-                        </div>
-                        <svg class="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
-                    </button>
-                </div>
-
-                <!-- Opsi QRIS (selected) -->
-                <div class="border-b border-white/5">
-                    <button class="w-full text-left px-6 py-4 flex justify-between items-center bg-indigo-900/20 focus:outline-none transition" id="qris-btn">
-                        <div class="flex items-center gap-4">
-                            <div class="w-12 h-8 bg-red-900/40 border border-red-500/20 rounded flex items-center justify-center font-bold text-red-400 text-xs">QRIS</div>
-                            <span class="text-gray-200 text-sm">QRIS (GoPay, OVO, Dana, LinkAja)</span>
-                        </div>
-                        <svg class="w-4 h-4 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
-                    </button>
-                </div>
-
-                <!-- QR Display -->
-                <div class="p-6 text-center" id="qris-display">
-                    <p class="text-xs text-gray-500 uppercase tracking-widest mb-4">Scan QR Code dengan aplikasi E-Wallet Anda</p>
-                    <div class="inline-block p-5 bg-white rounded-2xl mb-4 shadow-lg shadow-indigo-900/20">
-                        <svg class="w-44 h-44 mx-auto text-gray-900" viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M3 3h8v8H3V3zm2 2v4h4V5H5zm8-2h8v8h-8V3zm2 2v4h4V5h-4zM3 13h8v8H3v-8zm2 2v4h4v-4H5zm13-2h3v2h-3v-2zm-3 0h2v2h-2v-2zm3 3h3v2h-3v-2zm-2 3h2v2h-2v-2zm-3-3h2v2h-2v-2zm3 3h-2v2h2v-2zm-5 0h2v2h-2v-2z"></path>
-                        </svg>
-                    </div>
-                    <p class="font-mono text-sm font-semibold tracking-widest text-gray-400">NMID: 1234567890</p>
-                </div>
-            </div>
-
-            <!-- Panel Kanan: Ringkasan & Aksi -->
-            <div class="w-full md:w-1/3 flex flex-col gap-4">
+            <!-- Main Content -->
+            <div class="w-full max-w-md flex flex-col gap-6">
 
                 <!-- Order Summary -->
-                <div class="bg-[#16161d] border border-white/5 rounded-2xl overflow-hidden">
-                    <div class="p-6 border-b border-white/5">
-                        <p class="text-xs text-gray-500 uppercase tracking-widest mb-1">Order ID</p>
-                        <p class="font-mono text-sm text-gray-300">{{ $order_id }}</p>
+                <div class="bg-[#16161d] border border-white/5 rounded-2xl overflow-hidden shadow-xl">
+                    <div class="p-8 border-b border-white/5 bg-indigo-900/20 text-center">
+                        <p class="text-xs text-indigo-300 uppercase tracking-widest mb-2 font-semibold">Total Tagihan</p>
+                        <p class="text-4xl font-bold text-white">Rp {{ number_format($totalPrice, 0, ',', '.') }}</p>
                     </div>
-                    <div class="p-6">
-                        <p class="text-xs text-gray-500 uppercase tracking-widest mb-1">Total Pembayaran</p>
-                        <p class="text-2xl font-bold text-emerald-400">Rp {{ number_format($totalPrice, 0, ',', '.') }}</p>
+                    <div class="p-6 border-b border-white/5 flex justify-between items-center">
+                        <div>
+                            <p class="text-xs text-gray-500 uppercase tracking-widest mb-1">Order ID</p>
+                            <p class="font-mono text-sm text-gray-300">{{ $order_id }}</p>
+                        </div>
                     </div>
-                </div>
-
-                <!-- TOMBOL MOCK PAYMENT (tidak diubah, hanya restyled wrapper) -->
-                <div class="bg-[#16161d] border border-amber-500/20 rounded-2xl p-5">
-                    <p class="text-xs text-amber-400/80 mb-4 text-center leading-relaxed">
-                        <strong class="text-amber-400">Mode Simulasi / Developer</strong><br>
-                        Klik tombol di bawah untuk mensimulasikan pembayaran berhasil.
-                    </p>
-                    <form action="{{ route('payment.simulate', $order_id) }}" method="POST">
-                        @csrf
-                        <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-semibold py-3 px-4 rounded-xl transition text-sm flex justify-center items-center gap-2">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
-                            Bayar Sekarang (Mock)
+                    <div class="p-6 bg-[#1a1a24]">
+                        <button id="pay-button" class="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-semibold py-4 px-4 rounded-xl transition text-base shadow-lg shadow-indigo-600/30 flex justify-center items-center gap-2">
+                            Lanjutkan Pembayaran
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
                         </button>
-                    </form>
+                    </div>
                 </div>
 
-                <!-- Tombol Back -->
-                <a href="{{ route('payment.show', $order_id) }}"
-                   class="w-full text-center bg-white/5 hover:bg-white/10 border border-white/10 text-gray-300 font-medium py-3 rounded-xl transition text-sm">
-                    ← Kembali ke Ringkasan
-                </a>
+                <!-- Tombol Back / Cancel -->
+                <form action="{{ route('payment.cancel', $order_id) }}" method="POST">
+                    @csrf
+                    <button type="submit" onclick="return confirm('Apakah Anda yakin ingin membatalkan pesanan ini? Kursi akan dilepas kembali.')"
+                       class="w-full text-center text-red-400 hover:text-red-300 font-medium py-2 transition text-sm">
+                        ← Batal dan Lepas Kursi
+                    </button>
+                </form>
 
             </div>
+
         </div>
     </div>
 
@@ -130,5 +75,35 @@
         © {{ date('Y') }} BioskopKu — All rights reserved.
     </footer>
 
+    <!-- Midtrans Snap JS -->
+    <script src="{{ config('services.midtrans.is_production') ? 'https://app.midtrans.com/snap/snap.js' : 'https://app.sandbox.midtrans.com/snap/snap.js' }}" data-client-key="{{ config('services.midtrans.client_key') }}"></script>
+    <script type="text/javascript">
+      document.getElementById('pay-button').onclick = function(){
+        snap.pay('{{ $snapToken }}', {
+          onSuccess: function(result){
+            // Submit form to simulate route which marks as success
+            let form = document.createElement('form');
+            form.method = 'POST';
+            form.action = '{{ route("payment.simulate", $order_id) }}';
+            let csrf = document.createElement('input');
+            csrf.type = 'hidden';
+            csrf.name = '_token';
+            csrf.value = '{{ csrf_token() }}';
+            form.appendChild(csrf);
+            document.body.appendChild(form);
+            form.submit();
+          },
+          onPending: function(result){
+            alert("Menunggu pembayaran Anda!");
+          },
+          onError: function(result){
+            alert("Pembayaran gagal!");
+          },
+          onClose: function(){
+            console.log('User closed the popup without finishing the payment');
+          }
+        });
+      };
+    </script>
 </body>
 </html>

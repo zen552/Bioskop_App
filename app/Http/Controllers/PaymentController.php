@@ -103,8 +103,25 @@ class PaymentController extends Controller
         $schedule = $bookings->first()->schedule;
         $totalPrice = $bookings->count() * $schedule->harga;
 
-        // Render mock payment interface
-        return view('payment.process', compact('order_id', 'totalPrice'));
+        $params = [
+            'transaction_details' => [
+                'order_id' => $order_id,
+                'gross_amount' => $totalPrice,
+            ],
+            'customer_details' => [
+                'first_name' => auth()->user()->name,
+                'email' => auth()->user()->email,
+            ],
+        ];
+
+        try {
+            $snapToken = \Midtrans\Snap::getSnapToken($params);
+        } catch (\Exception $e) {
+            return back()->with('error', 'Gagal memproses pembayaran: ' . $e->getMessage());
+        }
+
+        // Render payment interface with Snap Token
+        return view('payment.process', compact('order_id', 'totalPrice', 'snapToken'));
     }
 
     public function simulate(Request $request, $order_id)
@@ -113,5 +130,20 @@ class PaymentController extends Controller
         Booking::where('order_id', $order_id)->update(['status' => 'success']);
 
         return redirect()->route('eticket.show', $order_id)->with('success', 'Pembayaran berhasil disimulasikan!');
+    }
+
+    public function cancel(Request $request, $order_id)
+    {
+        // Temukan booking pending
+        $bookings = Booking::where('order_id', $order_id)->where('status', 'pending')->get();
+        if ($bookings->isNotEmpty()) {
+            $schedule_id = $bookings->first()->schedule_id;
+            // Hapus agar kursi bisa dipilih kembali
+            Booking::where('order_id', $order_id)->where('status', 'pending')->delete();
+            
+            return redirect()->route('booking.seats', $schedule_id)->with('success', 'Transaksi dibatalkan. Silakan pilih kursi kembali.');
+        }
+
+        return redirect()->route('home');
     }
 }
