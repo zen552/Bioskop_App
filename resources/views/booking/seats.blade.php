@@ -371,6 +371,10 @@
                 <span>Bioskop</span>Ku
             </a>
             <div style="display:flex; flex-wrap:wrap; align-items:center; gap:8px;">
+                <a href="{{ route('profile.edit') }}"
+                    class="rounded-full border border-white/10 bg-white/5 px-4 py-2 text-xs font-medium text-gray-300 transition hover:bg-white/10">
+                    Profile
+                </a>
                 <a href="{{ route('eticket.index') }}"
                     class="rounded-full border border-indigo-500/30 bg-indigo-600/20 px-4 py-2 text-xs font-medium text-indigo-300 transition hover:bg-indigo-600/35">
                     Tiket Saya

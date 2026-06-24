@@ -91,6 +91,7 @@
             </div>
         @endif
         <div class="flex flex-col gap-3">
+            {{-- Tombol Midtrans (Pembayaran Asli) --}}
             <form action="{{ route('payment.process', $order_id) }}" method="POST">
                 @csrf
                 <button type="submit"
@@ -98,6 +99,7 @@
                     Lanjutkan ke Pembayaran →
                 </button>
             </form>
+
 
             <form action="{{ route('payment.cancel', $order_id) }}" method="POST">
                 @csrf

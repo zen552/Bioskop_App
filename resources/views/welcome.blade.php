@@ -47,6 +47,10 @@
                             </button>
                         </form>
                     @else
+                        <a href="{{ route('profile.edit') }}"
+                           class="rounded-full border border-white/10 bg-white/5 px-4 py-2 text-xs font-medium text-gray-300 transition hover:bg-white/10">
+                            Profile
+                        </a>
                         <a href="{{ route('eticket.index') }}"
                            class="rounded-full border border-indigo-500/30 bg-indigo-600/20 px-4 py-2 text-xs font-medium text-indigo-300 transition hover:bg-indigo-600/35">
                             Tiket Saya
@@ -292,12 +296,31 @@
                         </thead>
                         <tbody>
                             @foreach($schedules as $index => $schedule)
-                                <tr class="{{ $index % 2 === 0 ? 'bg-white/[0.01]' : '' }} border-t border-white/5 transition hover:bg-indigo-500/5">
-                                    <td class="px-5 py-4 font-medium text-white">{{ $schedule->film->judul }}</td>
+                                @auth
+                                    @if(!$previewMode)
+                                        <tr onclick="window.location='{{ route('booking.seats', $schedule->id) }}'"
+                                            class="{{ $index % 2 === 0 ? 'bg-white/[0.01]' : '' }} border-t border-white/5 transition hover:bg-indigo-500/10 cursor-pointer group">
+                                    @else
+                                        <tr class="{{ $index % 2 === 0 ? 'bg-white/[0.01]' : '' }} border-t border-white/5 transition hover:bg-indigo-500/5">
+                                    @endif
+                                @else
+                                    <tr onclick="window.location='{{ route('login') }}'"
+                                        class="{{ $index % 2 === 0 ? 'bg-white/[0.01]' : '' }} border-t border-white/5 transition hover:bg-indigo-500/10 cursor-pointer group">
+                                @endauth
+                                    <td class="px-5 py-4 font-medium text-white group-hover:text-indigo-300 transition">{{ $schedule->film->judul }}</td>
                                     <td class="px-5 py-4 text-gray-500">{{ $schedule->studio }}</td>
                                     <td class="px-5 py-4 text-gray-400 text-xs">{{ \Carbon\Carbon::parse($schedule->tanggal)->translatedFormat('d M Y') }}</td>
                                     <td class="px-5 py-4 text-amber-400 font-semibold">{{ \Carbon\Carbon::parse($schedule->jam_tayang)->format('H:i') }}</td>
-                                    <td class="px-5 py-4 text-emerald-400 font-semibold">Rp {{ number_format($schedule->harga, 0, ',', '.') }}</td>
+                                    <td class="px-5 py-4 text-emerald-400 font-semibold flex items-center justify-between">
+                                        Rp {{ number_format($schedule->harga, 0, ',', '.') }}
+                                        @auth
+                                            @if(!$previewMode)
+                                                <span class="text-xs text-indigo-400 opacity-0 group-hover:opacity-100 transition">Pilih Kursi →</span>
+                                            @endif
+                                        @else
+                                            <span class="text-xs text-indigo-400 opacity-0 group-hover:opacity-100 transition">Login dulu →</span>
+                                        @endauth
+                                    </td>
                                 </tr>
                             @endforeach
                         </tbody>
