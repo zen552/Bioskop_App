@@ -68,6 +68,14 @@ class HomeController extends Controller
             });
         }
 
+        // Hanya tampilkan film yang memiliki jadwal tayang mendatang
+        // (kecuali jika filter tanggal spesifik sudah digunakan — itu sudah dihandle di atas)
+        if (!$dateFilter) {
+            $filmQuery->whereHas('schedules', function ($q) {
+                $q->whereDate('tanggal', '>=', today());
+            });
+        }
+
         $films = $filmQuery->latest()->get();
 
         // 3. Query Jadwal Tayang

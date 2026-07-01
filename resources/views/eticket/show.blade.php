@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
+    <link rel="icon" type="image/png" href="{{ asset('favicon.png') }}">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>E-Ticket — BioskopKu</title>
@@ -95,12 +96,12 @@
                 </div>
 
                 <!-- QR Code -->
-                <div class="flex flex-col items-center justify-center bg-white rounded-2xl p-6 flex-shrink-0">
+                <div class="flex flex-col items-center justify-center bg-white rounded-2xl p-6 flex-shrink-0 cursor-pointer hover:scale-105 transition-transform duration-300 shadow-xl shadow-white/5" onclick="openQrModal()" title="Klik untuk memperbesar">
                     <div class="mb-3">
                         {!! $qrCode !!}
                     </div>
                     <p class="text-xs text-center text-gray-400 max-w-[160px]">
-                        Tunjukkan QR Code ini kepada petugas studio atau scan di mesin.
+                        Tunjukkan QR Code ini kepada petugas studio atau scan di mesin. (Klik untuk perbesar)
                     </p>
                 </div>
             </div>
@@ -111,10 +112,10 @@
             <!-- Bottom -->
             <div class="px-8 py-4 flex justify-between items-center">
                 <p class="text-xs text-gray-600">© {{ date('Y') }} BioskopKu</p>
-                <button onclick="window.print()"
-                        class="no-print text-xs font-semibold bg-white/5 border border-white/10 px-4 py-2 rounded-full hover:bg-white/10 transition text-gray-300">
-                        Cetak / Simpan PDF
-                </button>
+                <a href="{{ route('eticket.download', $order_id) }}"
+                   class="no-print inline-flex items-center gap-1.5 text-xs font-semibold bg-indigo-600 px-4 py-2 rounded-full hover:bg-indigo-500 transition text-white shadow-md shadow-indigo-900/30">
+                    Unduh PDF
+                </a>
             </div>
         </div>
 
@@ -124,5 +125,38 @@
         © {{ date('Y') }} BioskopKu — All rights reserved.
     </footer>
 
+    <!-- Modal QR Code -->
+    <div id="qrModal" class="fixed inset-0 z-[100] bg-black/80 backdrop-blur-sm hidden flex-col items-center justify-center opacity-0 transition-opacity duration-300 no-print" onclick="closeQrModal()">
+        <div class="bg-white p-6 sm:p-8 rounded-3xl transform scale-95 transition-transform duration-300 shadow-2xl flex flex-col items-center mx-4" id="qrModalContent" onclick="event.stopPropagation()">
+            <div class="mb-4 [&>svg]:w-64 [&>svg]:h-64 sm:[&>svg]:w-72 sm:[&>svg]:h-72">
+                {!! $qrCode !!}
+            </div>
+            <p class="text-sm text-center text-gray-500 font-medium">Scan QR Code ini</p>
+            <button onclick="closeQrModal()" class="mt-6 w-full px-8 py-3 bg-gray-100 hover:bg-gray-200 text-gray-800 rounded-xl text-sm font-semibold transition">Tutup</button>
+        </div>
+    </div>
+
+    <script>
+        const modal = document.getElementById('qrModal');
+        const modalContent = document.getElementById('qrModalContent');
+
+        function openQrModal() {
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            // Trigger reflow
+            void modal.offsetWidth;
+            modal.classList.remove('opacity-0');
+            modalContent.classList.remove('scale-95');
+        }
+
+        function closeQrModal() {
+            modal.classList.add('opacity-0');
+            modalContent.classList.add('scale-95');
+            setTimeout(() => {
+                modal.classList.add('hidden');
+                modal.classList.remove('flex');
+            }, 300);
+        }
+    </script>
 </body>
 </html>

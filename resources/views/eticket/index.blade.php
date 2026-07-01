@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
+    <link rel="icon" type="image/png" href="{{ asset('favicon.png') }}">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tiket Saya — BioskopKu</title>
@@ -56,13 +57,13 @@
                         $seats = $bookings->pluck('seat_number')->implode(', ');
                     @endphp
 
-                    <div class="bg-[#16161d] border border-white/5 hover:border-indigo-500/30 rounded-2xl overflow-hidden flex flex-col sm:flex-row transition-all duration-200 hover:shadow-lg hover:shadow-indigo-900/10">
+                    <div class="bg-[#16161d] border border-white/5 hover:border-indigo-500/30 rounded-2xl overflow-hidden flex flex-row transition-all duration-200 hover:shadow-lg hover:shadow-indigo-900/10">
 
                         <!-- Poster -->
-                        <div class="w-full sm:w-28 bg-[#0f0f13] flex items-center justify-center p-4 flex-shrink-0">
+                        <div class="w-24 sm:w-28 bg-[#0f0f13] flex items-center justify-center p-3 flex-shrink-0">
                             @if($film->poster)
                                 <img src="{{ $film->poster_url }}"
-                                     class="h-24 w-full object-contain rounded-lg" alt="Poster">
+                                     class="w-full h-auto object-contain rounded-lg shadow-md" alt="Poster">
                             @else
                                 <span class="text-3xl">🎬</span>
                             @endif

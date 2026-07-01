@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\DB;
 use Midtrans\Snap;
 use Midtrans\Notification;
 use App\Models\Booking;
+use App\Jobs\SendTicketEmailJob;
 
 class PaymentController extends Controller
 {
@@ -64,6 +65,8 @@ class PaymentController extends Controller
 
             if ($transactionStatus == 'settlement' || $transactionStatus == 'capture') {
                 DB::table('transactions')->where('order_id', $orderId)->update(['status_pembayaran' => 'success']);
+                // Kirim email tiket ke background queue
+                SendTicketEmailJob::dispatch($orderId);
             } elseif ($transactionStatus == 'pending') {
                 DB::table('transactions')->where('order_id', $orderId)->update(['status_pembayaran' => 'pending']);
             } elseif (in_array($transactionStatus, ['deny', 'expire', 'cancel'])) {
@@ -128,6 +131,9 @@ class PaymentController extends Controller
     {
         // Simulasi pembayaran berhasil
         Booking::where('order_id', $order_id)->update(['status' => 'success']);
+
+        // Kirim email tiket ke background queue
+        SendTicketEmailJob::dispatch($order_id);
 
         return redirect()->route('eticket.show', $order_id)->with('success', 'Pembayaran berhasil disimulasikan!');
     }

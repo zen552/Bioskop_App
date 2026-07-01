@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
+    <link rel="icon" type="image/png" href="{{ asset('favicon.png') }}">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Bioskop</title>
@@ -18,7 +19,10 @@
 @endphp
 <body class="min-h-screen bg-[#0f0f13] text-slate-100">
     <div class="min-h-screen lg:flex">
-        <aside class="hidden w-72 shrink-0 border-r border-white/5 bg-[#16161d] lg:flex lg:flex-col sticky top-0 h-screen overflow-y-auto">
+        <!-- Mobile Sidebar Backdrop -->
+        <div id="sidebarBackdrop" class="fixed inset-0 z-40 bg-black/80 hidden lg:hidden" onclick="toggleSidebar()"></div>
+
+        <aside id="sidebar" class="fixed inset-y-0 left-0 z-50 w-72 transform -translate-x-full bg-[#16161d] border-r border-white/5 transition-transform duration-300 lg:sticky lg:top-0 lg:h-screen lg:translate-x-0 lg:flex lg:flex-col lg:shrink-0 overflow-y-auto">
             <div class="border-b border-white/5 px-6 py-6">
                 <p class="text-xs font-semibold uppercase tracking-[0.3em] text-indigo-300">Admin Panel</p>
                 <h1 class="mt-2 text-2xl font-bold text-white">BioskopKu</h1>
@@ -57,10 +61,14 @@
         </aside>
 
         <div class="flex-1">
-            <header class="border-b border-white/5 bg-[#0f0f13]/90 backdrop-blur">
+            <header class="sticky top-0 z-30 border-b border-white/5 bg-[#0f0f13]/90 backdrop-blur">
                 <div class="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-4 sm:px-6 lg:px-8">
-                    <div>
-                        <p class="text-xs font-semibold uppercase tracking-[0.3em] text-indigo-300">Workspace Admin</p>
+                    <div class="flex items-center gap-3">
+                        <button onclick="toggleSidebar()" class="lg:hidden p-2 -ml-2 text-gray-400 hover:text-white transition">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+                        </button>
+                        <div>
+                            <p class="text-xs font-semibold uppercase tracking-[0.3em] text-indigo-300">Workspace Admin</p>
                         <h2 class="mt-1 text-xl font-bold text-white">{{ $pageTitle }}</h2>
                     </div>
 
@@ -86,6 +94,19 @@
             </main>
         </div>
     </div>
+    <script>
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const backdrop = document.getElementById('sidebarBackdrop');
+            if (sidebar.classList.contains('-translate-x-full')) {
+                sidebar.classList.remove('-translate-x-full');
+                backdrop.classList.remove('hidden');
+            } else {
+                sidebar.classList.add('-translate-x-full');
+                backdrop.classList.add('hidden');
+            }
+        }
+    </script>
     @stack('scripts')
 </body>
 </html>

@@ -34,6 +34,7 @@ Route::middleware(['auth', 'user'])->group(function () {
     // E-Ticket
     Route::get('/tiket-saya', [App\Http\Controllers\ETicketController::class, 'index'])->name('eticket.index');
     Route::get('/e-ticket/{order_id}', [App\Http\Controllers\ETicketController::class, 'show'])->name('eticket.show');
+    Route::get('/e-ticket/{order_id}/download', [App\Http\Controllers\ETicketController::class, 'downloadPdf'])->name('eticket.download');
 });
 
 // Route khusus admin

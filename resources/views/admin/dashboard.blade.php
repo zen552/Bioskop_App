@@ -31,12 +31,12 @@
 
 <section class="mt-6">
     <div class="rounded-[2rem] border border-white/5 bg-[#16161d] p-6">
-        <div class="flex items-center justify-between gap-3">
+        <div class="flex flex-col items-start gap-4 sm:flex-row sm:items-center justify-between">
             <div>
                 <p class="text-xs font-semibold uppercase tracking-[0.3em] text-gray-400">Film Terbaru</p>
-                <h2 class="mt-2 text-2xl font-bold text-white">Cek poster dan metadata sebelum tayang.</h2>
+                <h2 class="mt-2 text-xl sm:text-2xl font-bold text-white">Cek poster dan metadata sebelum tayang.</h2>
             </div>
-            <a href="{{ route('admin.films.index') }}" class="rounded-full border border-white/10 px-4 py-2 text-sm font-semibold text-gray-200 transition hover:bg-white/5">
+            <a href="{{ route('admin.films.index') }}" class="shrink-0 rounded-full border border-white/10 px-4 py-2 text-sm font-semibold text-gray-200 transition hover:bg-white/5">
                 Lihat Semua Film
             </a>
         </div>

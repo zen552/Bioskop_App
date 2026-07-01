@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
+    <link rel="icon" type="image/png" href="{{ asset('favicon.png') }}">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>BioskopKu</title>
@@ -174,7 +175,7 @@
                         
                         <!-- Durasi Dropdown -->
                         <div>
-                            <select name="duration" class="w-full rounded-xl border border-white/10 bg-[#0f0f13] px-3 py-2.5 text-xs text-white placeholder-gray-500 transition-colors focus:border-indigo-500 focus:outline-none">
+                            <select name="duration" class="w-full rounded-xl border border-white/10 bg-[#0f0f13] px-3 py-2.5 text-xs text-white placeholder-gray-500 transition-colors focus:border-indigo-500 focus:outline-none cursor-pointer">
                                 <option value="">Semua Durasi</option>
                                 <option value="short" {{ $duration == 'short' ? 'selected' : '' }}>Singkat (< 90 mnt)</option>
                                 <option value="medium" {{ $duration == 'medium' ? 'selected' : '' }}>Sedang (90-120 mnt)</option>
@@ -195,12 +196,14 @@
                         <!-- Date Picker -->
                         <div>
                             <input type="date" name="date" value="{{ $dateFilter }}" 
-                                   class="w-full rounded-xl border border-white/10 bg-[#0f0f13] px-3 py-2.5 text-xs text-white placeholder-gray-500 transition-colors focus:border-amber-500 focus:outline-none">
+                                   style="color-scheme: dark;"
+                                   onclick="this.showPicker()"
+                                   class="w-full rounded-xl border border-white/10 bg-[#0f0f13] px-3 py-2.5 text-xs text-white placeholder-gray-500 transition-colors focus:border-amber-500 focus:outline-none cursor-pointer">
                         </div>
                         
                         <!-- Studio Dropdown -->
                         <div>
-                            <select name="studio" class="w-full rounded-xl border border-white/10 bg-[#0f0f13] px-3 py-2.5 text-xs text-white placeholder-gray-500 transition-colors focus:border-amber-500 focus:outline-none">
+                            <select name="studio" class="w-full rounded-xl border border-white/10 bg-[#0f0f13] px-3 py-2.5 text-xs text-white placeholder-gray-500 transition-colors focus:border-amber-500 focus:outline-none cursor-pointer">
                                 <option value="">Semua Studio</option>
                                 @foreach($allStudios as $st)
                                     <option value="{{ $st }}" {{ $studio == $st ? 'selected' : '' }}>{{ $st }}</option>
@@ -288,37 +291,45 @@
                         <thead>
                             <tr class="bg-white/[0.03] text-left text-xs uppercase tracking-wider text-gray-500">
                                 <th class="px-5 py-4 font-medium">Film</th>
-                                <th class="px-5 py-4 font-medium">Studio</th>
-                                <th class="px-5 py-4 font-medium">Tanggal</th>
+                                <th class="hidden md:table-cell px-5 py-4 font-medium">Studio</th>
+                                <th class="hidden md:table-cell px-5 py-4 font-medium">Tanggal</th>
                                 <th class="px-5 py-4 font-medium">Jam</th>
                                 <th class="px-5 py-4 font-medium">Harga</th>
+                                <th class="hidden md:table-cell px-5 py-4 font-medium text-right"><span class="sr-only">Aksi</span></th>
                             </tr>
                         </thead>
                         <tbody>
                             @foreach($schedules as $index => $schedule)
                                 @auth
                                     @if(!$previewMode)
-                                        <tr onclick="window.location='{{ route('booking.seats', $schedule->id) }}'"
-                                            class="{{ $index % 2 === 0 ? 'bg-white/[0.01]' : '' }} border-t border-white/5 transition hover:bg-indigo-500/10 cursor-pointer group">
+                                        <tr onclick="if(window.innerWidth < 768) window.location='{{ route('booking.seats', $schedule->id) }}'"
+                                            class="{{ $index % 2 === 0 ? 'bg-white/[0.01] md:hover:bg-white/[0.01]' : 'md:hover:bg-transparent' }} border-t border-white/5 transition hover:bg-indigo-500/10 cursor-pointer md:cursor-default group">
                                     @else
                                         <tr class="{{ $index % 2 === 0 ? 'bg-white/[0.01]' : '' }} border-t border-white/5 transition hover:bg-indigo-500/5">
                                     @endif
                                 @else
-                                    <tr onclick="window.location='{{ route('login') }}'"
-                                        class="{{ $index % 2 === 0 ? 'bg-white/[0.01]' : '' }} border-t border-white/5 transition hover:bg-indigo-500/10 cursor-pointer group">
+                                    <tr onclick="if(window.innerWidth < 768) window.location='{{ route('login') }}'"
+                                        class="{{ $index % 2 === 0 ? 'bg-white/[0.01] md:hover:bg-white/[0.01]' : 'md:hover:bg-transparent' }} border-t border-white/5 transition hover:bg-indigo-500/10 cursor-pointer md:cursor-default group">
                                 @endauth
-                                    <td class="px-5 py-4 font-medium text-white group-hover:text-indigo-300 transition">{{ $schedule->film->judul }}</td>
-                                    <td class="px-5 py-4 text-gray-500">{{ $schedule->studio }}</td>
-                                    <td class="px-5 py-4 text-gray-400 text-xs">{{ \Carbon\Carbon::parse($schedule->tanggal)->translatedFormat('d M Y') }}</td>
+                                    <td class="px-5 py-4 font-medium text-white group-hover:text-indigo-300 md:group-hover:text-white transition">
+                                        {{ $schedule->film->judul }}
+                                        <div class="md:hidden mt-1 text-xs font-normal text-gray-400">
+                                            {{ $schedule->studio }} • {{ \Carbon\Carbon::parse($schedule->tanggal)->translatedFormat('d M') }}
+                                        </div>
+                                    </td>
+                                    <td class="hidden md:table-cell px-5 py-4 text-gray-500">{{ $schedule->studio }}</td>
+                                    <td class="hidden md:table-cell px-5 py-4 text-gray-400 text-xs">{{ \Carbon\Carbon::parse($schedule->tanggal)->translatedFormat('d M Y') }}</td>
                                     <td class="px-5 py-4 text-amber-400 font-semibold">{{ \Carbon\Carbon::parse($schedule->jam_tayang)->format('H:i') }}</td>
-                                    <td class="px-5 py-4 text-emerald-400 font-semibold flex items-center justify-between">
+                                    <td class="px-5 py-4 text-emerald-400 font-semibold">
                                         Rp {{ number_format($schedule->harga, 0, ',', '.') }}
+                                    </td>
+                                    <td class="hidden md:table-cell px-5 py-4 text-right">
                                         @auth
                                             @if(!$previewMode)
-                                                <span class="text-xs text-indigo-400 opacity-0 group-hover:opacity-100 transition">Pilih Kursi →</span>
+                                                <a href="{{ route('booking.seats', $schedule->id) }}" class="inline-block rounded-full bg-indigo-600 px-4 py-2 text-xs font-semibold text-white transition hover:bg-indigo-500 shadow-md shadow-indigo-900/20">Pilih Kursi →</a>
                                             @endif
                                         @else
-                                            <span class="text-xs text-indigo-400 opacity-0 group-hover:opacity-100 transition">Login dulu →</span>
+                                            <a href="{{ route('login') }}" class="inline-block rounded-full border border-white/10 bg-white/5 px-4 py-2 text-xs font-semibold text-gray-300 transition hover:bg-white/10">Login dulu →</a>
                                         @endauth
                                     </td>
                                 </tr>

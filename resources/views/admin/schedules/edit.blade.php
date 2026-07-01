@@ -9,7 +9,7 @@
         <div class="mb-4">
             <label class="block text-sm font-medium text-gray-300 mb-1">Film</label>
             <select name="film_id"
-                    class="w-full rounded-xl border border-white/10 bg-[#0f0f13] px-3 py-2 text-sm text-white focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                    class="w-full rounded-xl border border-white/10 bg-[#0f0f13] px-3 py-2 text-sm text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 cursor-pointer">
                 <option value="">-- Pilih Film --</option>
                 @foreach($films as $film)
                     <option value="{{ $film->id }}" {{ old('film_id', $schedule->film_id) == $film->id ? 'selected' : '' }}>
@@ -30,14 +30,18 @@
         <div class="mb-4">
             <label class="block text-sm font-medium text-gray-300 mb-1">Tanggal</label>
             <input type="date" name="tanggal" value="{{ old('tanggal', $schedule->tanggal) }}"
-                   class="w-full rounded-xl border border-white/10 bg-[#0f0f13] px-3 py-2 text-sm text-white focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                   style="color-scheme: dark;"
+                   onclick="this.showPicker()"
+                   class="w-full rounded-xl border border-white/10 bg-[#0f0f13] px-3 py-2 text-sm text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 cursor-pointer">
             @error('tanggal')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
         </div>
 
         <div class="mb-4">
             <label class="block text-sm font-medium text-gray-300 mb-1">Jam Tayang</label>
             <input type="time" name="jam_tayang" value="{{ old('jam_tayang', $schedule->jam_tayang) }}"
-                   class="w-full rounded-xl border border-white/10 bg-[#0f0f13] px-3 py-2 text-sm text-white focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                   style="color-scheme: dark;"
+                   onclick="this.showPicker()"
+                   class="w-full rounded-xl border border-white/10 bg-[#0f0f13] px-3 py-2 text-sm text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 cursor-pointer">
             @error('jam_tayang')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
         </div>
 
