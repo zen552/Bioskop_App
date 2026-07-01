@@ -30,7 +30,11 @@ class ETicketController extends Controller
             abort(403, 'Fitur Tiket Saya hanya tersedia untuk user.');
         }
 
-        $bookings = Booking::with('schedule.film', 'user')->where('order_id', $order_id)->get();
+        // Hanya pemilik order yang boleh melihat e-ticket ini
+        $bookings = Booking::with('schedule.film', 'user')
+            ->where('order_id', $order_id)
+            ->where('user_id', auth()->id())
+            ->get();
 
         if ($bookings->isEmpty() || $bookings->first()->status !== 'success') {
             abort(404, 'E-Ticket tidak ditemukan atau pembayaran belum selesai.');
@@ -55,7 +59,11 @@ class ETicketController extends Controller
             abort(403, 'Fitur ini hanya tersedia untuk user.');
         }
 
-        $bookings = Booking::with('schedule.film', 'user')->where('order_id', $order_id)->get();
+        // Hanya pemilik order yang boleh mengunduh PDF tiket ini
+        $bookings = Booking::with('schedule.film', 'user')
+            ->where('order_id', $order_id)
+            ->where('user_id', auth()->id())
+            ->get();
 
         if ($bookings->isEmpty() || $bookings->first()->status !== 'success') {
             abort(404, 'E-Ticket tidak ditemukan atau pembayaran belum selesai.');

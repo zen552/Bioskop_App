@@ -28,8 +28,8 @@ Route::middleware(['auth', 'user'])->group(function () {
     Route::post('/pembayaran/simulate/{order_id}', [PaymentController::class, 'simulate'])->name('payment.simulate');
     Route::post('/pembayaran/cancel/{order_id}', [PaymentController::class, 'cancel'])->name('payment.cancel');
     
-    // Midtrans Checkout Routes (New from Rai)
-    Route::any('/payment/checkout', [PaymentController::class, 'createTransaction'])->name('payment.checkout');
+    // Midtrans Checkout Routes
+    Route::post('/payment/checkout', [PaymentController::class, 'createTransaction'])->name('payment.checkout');
     
     // E-Ticket
     Route::get('/tiket-saya', [App\Http\Controllers\ETicketController::class, 'index'])->name('eticket.index');

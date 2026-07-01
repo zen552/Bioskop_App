@@ -31,7 +31,7 @@ class ScheduleController extends Controller
             'harga'      => 'required|integer|min:0',
         ]);
 
-        Schedule::create($request->all());
+        Schedule::create($request->only(['film_id', 'studio', 'tanggal', 'jam_tayang', 'harga']));
         return redirect()->route('admin.schedules.index')->with('success', 'Jadwal berhasil ditambahkan!');
     }
 
@@ -51,7 +51,7 @@ class ScheduleController extends Controller
             'harga'      => 'required|integer|min:0',
         ]);
 
-        $schedule->update($request->all());
+        $schedule->update($request->only(['film_id', 'studio', 'tanggal', 'jam_tayang', 'harga']));
         return redirect()->route('admin.schedules.index')->with('success', 'Jadwal berhasil diupdate!');
     }
 

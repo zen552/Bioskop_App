@@ -20,10 +20,10 @@ class User extends Authenticatable
      * @var list<string>
      */
     protected $fillable = [
-    'name', 
-    'email', 
-    'password', 
-    'role',
+        'name',
+        'email',
+        'password',
+        // 'role' sengaja tidak di-fillable agar tidak bisa di-mass assign
     ];
 
     public function isAdmin(): bool

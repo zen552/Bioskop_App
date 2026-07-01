@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Schedule;
 use App\Models\Booking; 
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 
 class BookingController extends Controller
 {
@@ -30,13 +31,25 @@ class BookingController extends Controller
      */
     public function confirm(Request $request, Schedule $schedule)
     {
-        // Validasi input kursi tidak boleh kosong
+        // Validasi input kursi
         $request->validate([
-            'selected_seats' => 'required|string',
+            'selected_seats' => 'required|string|max:200',
         ]);
 
-        // Mengubah string "A1,A2,A3" dari input hidden menjadi array ['A1', 'A2', 'A3']
-        $seats = explode(',', $request->selected_seats);
+        // Parse dan bersihkan input kursi
+        $seats = array_values(array_filter(array_map('trim', explode(',', $request->selected_seats))));
+
+        // Batasi maksimal 8 kursi per pemesanan
+        if (count($seats) === 0 || count($seats) > 8) {
+            return back()->withErrors('Pemesanan harus antara 1 hingga 8 kursi.');
+        }
+
+        // Validasi format kursi: harus berupa huruf kapital diikuti 1-2 angka (contoh: A1, B12)
+        foreach ($seats as $seat) {
+            if (!preg_match('/^[A-Z][0-9]{1,2}$/', $seat)) {
+                return back()->withErrors('Format kursi tidak valid: ' . $seat);
+            }
+        }
 
         // Validasi tambahan: Cek apakah ada kursi yang keduluan dipesan orang lain
         $alreadyTaken = Booking::where('schedule_id', $schedule->id)
@@ -47,8 +60,8 @@ class BookingController extends Controller
             return back()->withErrors('Maaf, salah satu kursi yang Anda pilih baru saja dipesan oleh orang lain. Silakan pilih kursi lain.');
         }
 
-        // Generate unique order_id
-        $orderId = 'ORDER-' . time() . '-' . rand(1000, 9999);
+        // Generate order_id yang tidak mudah ditebak menggunakan string acak
+        $orderId = 'ORDER-' . strtoupper(Str::random(12));
 
         // Loop untuk menyimpan setiap kursi yang dipesan ke database
         foreach ($seats as $seat) {
