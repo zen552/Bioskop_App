@@ -17,11 +17,10 @@
             color: #1a1a2e;
         }
         .page {
-            width: 100%;
-            padding: 20px;
+            padding-top: 30px;
         }
         .ticket-card {
-            width: 100%;
+            width: 600px;
             margin: 0 auto;
             border: 1px solid #e2e8f0;
             border-radius: 12px;
@@ -74,6 +73,7 @@
         .info-top {
             width: 100%;
             margin-bottom: 30px;
+            text-align: center;
         }
         .qr-bottom {
             width: 100%;
@@ -115,6 +115,7 @@
             display: inline-block;
             width: 48%;
             vertical-align: top;
+            text-align: center;
         }
         .divider {
             border-top: 1px dashed #e5e7eb;
@@ -138,6 +139,7 @@
         .ticket-footer {
             border-top: 1px dashed #e5e7eb;
             padding: 16px 32px;
+            text-align: center;
         }
         .footer-text {
             font-size: 11px;
@@ -165,27 +167,28 @@
                 <div class="field-label">Film</div>
                 <div class="field-value-lg">{{ $schedule->film->judul }}</div>
 
-                <div class="grid-row">
-                    <div class="grid-col">
-                        <div class="field-label">Tanggal</div>
-                        <div class="field-value">{{ \Carbon\Carbon::parse($schedule->tanggal)->translatedFormat('d F Y') }}</div>
-                    </div>
-                    <div class="grid-col">
-                        <div class="field-label">Jam</div>
-                        <div class="field-value-amber">{{ \Carbon\Carbon::parse($schedule->jam_tayang)->format('H:i') }}</div>
-                    </div>
-                </div>
-
-                <div class="grid-row">
-                    <div class="grid-col">
-                        <div class="field-label">Studio</div>
-                        <div class="field-value">{{ $schedule->studio }}</div>
-                    </div>
-                    <div class="grid-col">
-                        <div class="field-label">Kursi</div>
-                        <div class="field-value-indigo">{{ $seatsString }}</div>
-                    </div>
-                </div>
+                <table style="margin: 0 auto; width: 65%; text-align: center;">
+                    <tr>
+                        <td style="padding-bottom: 20px;">
+                            <div class="field-label">Tanggal</div>
+                            <div class="field-value" style="margin-bottom: 0;">{{ \Carbon\Carbon::parse($schedule->tanggal)->translatedFormat('d F Y') }}</div>
+                        </td>
+                        <td style="padding-bottom: 20px;">
+                            <div class="field-label">Jam</div>
+                            <div class="field-value-amber" style="margin-bottom: 0;">{{ \Carbon\Carbon::parse($schedule->jam_tayang)->format('H:i') }}</div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="field-label">Studio</div>
+                            <div class="field-value" style="margin-bottom: 0;">{{ $schedule->studio }}</div>
+                        </td>
+                        <td>
+                            <div class="field-label">Kursi</div>
+                            <div class="field-value-indigo" style="margin-bottom: 0;">{{ $seatsString }}</div>
+                        </td>
+                    </tr>
+                </table>
 
                 <div class="divider"></div>
 

@@ -82,6 +82,7 @@ class PaymentController extends Controller
             if ($transactionStatus == 'settlement' || $transactionStatus == 'capture') {
                 DB::table('transactions')->where('order_id', $orderId)->update(['status_pembayaran' => 'success']);
                 // Kirim email tiket ke background queue
+                // Kirim email tiket ke background queue
                 SendTicketEmailJob::dispatch($orderId);
             } elseif ($transactionStatus == 'pending') {
                 DB::table('transactions')->where('order_id', $orderId)->update(['status_pembayaran' => 'pending']);
@@ -168,6 +169,7 @@ class PaymentController extends Controller
             ->where('user_id', auth()->id())
             ->update(['status' => 'success']);
 
+        // Kirim email tiket ke background queue
         // Kirim email tiket ke background queue
         SendTicketEmailJob::dispatch($order_id);
 
