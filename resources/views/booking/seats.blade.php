@@ -395,6 +395,24 @@
         {{-- Tombol Kembali --}}
         <a href="{{ url()->previous() }}" class="back-link">← Kembali ke Jadwal</a>
 
+        {{-- Alert Error Validasi --}}
+        @if($errors->any())
+            <div style="background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.3); color: #fca5a5; padding: 16px; border-radius: 12px; margin-bottom: 24px; font-size: 13px;">
+                <div style="display: flex; flex-direction: column; gap: 4px;">
+                    @foreach($errors->all() as $error)
+                        <div>{{ $error }}</div>
+                    @endforeach
+                </div>
+            </div>
+        @endif
+        
+        {{-- Alert Sukses --}}
+        @if(session('success'))
+            <div style="background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3); color: #6ee7b7; padding: 16px; border-radius: 12px; margin-bottom: 24px; font-size: 13px;">
+                {{ session('success') }}
+            </div>
+        @endif
+
         {{-- Ringkasan Film & Jadwal --}}
         <div class="film-card">
             <div>
