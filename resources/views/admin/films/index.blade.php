@@ -55,7 +55,7 @@
                                class="mr-3 text-xs font-semibold text-indigo-300 transition hover:text-indigo-200">
                                 Edit
                             </a>
-                            <form action="{{ route('admin.films.destroy', $film) }}" method="POST" class="inline" onsubmit="return confirm('Hapus film ini?')">
+                            <form action="{{ route('admin.films.destroy', $film) }}" method="POST" class="inline" onsubmit="confirmDelete(event, this, '{{ $film->judul }}')">
                                 @csrf @method('DELETE')
                                 <button class="text-xs font-semibold text-red-300 transition hover:text-red-200">
                                     Hapus
@@ -77,7 +77,7 @@
                                     <a href="{{ route('admin.preview.films.show', $film) }}" class="font-semibold text-indigo-300">Buka preview</a>
                                     <div class="flex items-center gap-4">
                                         <a href="{{ route('admin.films.edit', $film) }}" class="font-semibold text-indigo-300">Edit</a>
-                                        <form action="{{ route('admin.films.destroy', $film) }}" method="POST" class="inline" onsubmit="return confirm('Hapus film ini?')">
+                                        <form action="{{ route('admin.films.destroy', $film) }}" method="POST" class="inline" onsubmit="confirmDelete(event, this, '{{ $film->judul }}')">
                                             @csrf @method('DELETE')
                                             <button class="font-semibold text-red-300">Hapus</button>
                                         </form>
@@ -104,3 +104,27 @@
     </div>
 </div>
 @endsection
+
+@push('scripts')
+<script>
+    function confirmDelete(e, form, title) {
+        e.preventDefault();
+        Swal.fire({
+            title: 'Hapus Film?',
+            text: `Apakah Anda yakin ingin menonaktifkan film "${title}"?`,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#ef4444',
+            cancelButtonColor: '#4f46e5',
+            confirmButtonText: 'Ya, hapus!',
+            cancelButtonText: 'Batal',
+            background: '#16161d',
+            color: '#fff'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                form.submit();
+            }
+        });
+    }
+</script>
+@endpush

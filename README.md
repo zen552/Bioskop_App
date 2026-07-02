@@ -1,243 +1,155 @@
-# 🎥 BioskopKu - Sistem Pemesanan Tiket Bioskop
+# 🎬 BioskopKu - Cinema Ticketing System
 
-Sistem informasi bioskop modern berbasis web yang dirancang menggunakan framework **Laravel 12**, **Blade**, dan **Tailwind CSS**. Aplikasi ini mendukung alur pemesanan lengkap mulai dari katalog film, pemilihan kursi dinamis, simulasi pembayaran, hingga penerbitan e-ticket dengan QR Code, serta panel kontrol administrasi khusus.
+BioskopKu adalah aplikasi pemesanan tiket bioskop modern berbasis web. Aplikasi ini dibangun dengan framework **Laravel**, antarmuka yang elegan menggunakan **TailwindCSS** (Dark Mode), dan fitur transaksi *real-time* yang terintegrasi penuh dengan **Midtrans Payment Gateway**.
 
----
-
-## 📝 Gambaran Proyek
-
-**BioskopKu** dibangun untuk mempermudah operasional bioskop modern dan memberikan pengalaman bertransaksi yang mulus bagi penonton. Aplikasi ini menerapkan pemisahan peran yang ketat antara **Pengguna (User)** yang bertransaksi dan **Administrator (Admin)** yang mengelola konten serta jadwal penayangan.
-
-Sistem juga dilengkapi dengan fitur keamanan database seperti pencegahan *double-booking* kursi pada jadwal tayang yang sama, serta antarmuka administrasi berupa **Live Preview Sandbox** untuk memantau tampilan pengguna tanpa memengaruhi transaksi yang sedang berlangsung.
+Aplikasi ini dibuat dengan sangat memperhatikan *User Experience* (UX) dan keamanan data, mencakup sistem pemilihan kursi yang interaktif, pengiriman E-Ticket PDF via email *background queue*, hingga sistem *Soft Deletes* untuk menjaga integritas *history* transaksi.
 
 ---
 
 ## ✨ Fitur Utama
 
-### 👥 Portal Pengguna (User)
-*   **Registrasi & Login**: Autentikasi aman terintegrasi menggunakan Laravel Breeze.
-*   **Katalog Film**: Halaman utama berisi daftar film terbaru yang sedang tayang.
-*   **Detail Film & Jadwal**: Halaman detail yang menyajikan sinopsis, genre, durasi, dan pilihan tanggal serta jam tayang secara real-time.
-*   **Pemilihan Kursi Interaktif**: Layout denah studio dengan penanda warna kursi (Tersedia, Terpilih, Terisi/Sold). Proteksi bawaan mencegah pemesanan ganda.
-*   **Simulasi Pembayaran (Mock Checkout)**: Alur pembayaran aman untuk memproses pesanan (`order_id`) dari status *pending* menjadi *success*.
-*   **E-Ticket Dinamis**: Tiket elektronik yang dilengkapi QR Code berisi detail pesanan, data film, dan nomor kursi untuk proses check-in.
-*   **Riwayat Transaksi ("Tiket Saya")**: Halaman khusus bagi pengguna untuk melihat kembali e-ticket dari pesanan yang sukses.
-
-### 🛡️ Portal Administrator (Admin)
-*   **Halaman Login Terpisah**: Jalur masuk admin khusus lewat `/admin/login` untuk mencegah pencampuran otoritas.
-*   **Dashboard Statistik**: Dashboard ringkas untuk memantau aktivitas sistem.
-*   **CRUD Film**: Panel khusus untuk mengelola data film lengkap dengan unggah gambar poster film.
-*   **CRUD Jadwal Tayang**: Pengelolaan studio, tanggal tayang, jam tayang, dan harga tiket untuk setiap film.
-*   **Live Preview Sandbox**: Fitur unik bagi admin untuk meninjau halaman utama pengguna dalam mode *read-only* (tidak dapat memesan tiket saat dalam mode preview).
+- **Sistem Autentikasi & Role (Admin / User)**
+- **Katalog Film & Jadwal Tayang**: UI modern dengan layout grid, *glassmorphism*, dan *hover effects*.
+- **Live Seat Selection**: Pemilihan kursi bioskop secara visual (maks 8 kursi per transaksi).
+- **Payment Gateway Midtrans**: Mendukung pembayaran *sandbox/production* via QRIS, GoPay, Virtual Account, dll.
+- **Background Mailer**: Pengiriman email otomatis (menggunakan *queue worker*) ke pelanggan setelah pembayaran berhasil (tanpa lag di UI).
+- **PDF E-Ticket Generator**: Pembuatan struk tiket bioskop digital beserta QR Code untuk *check-in* studio.
+- **Admin Workspace**: Panel manajemen lengkap untuk CRUD Film dan Jadwal Tayang.
+- **Cascading Soft Deletes**: Penghapusan data master (Film/Jadwal) dijamin tidak akan merusak riwayat transaksi pelanggan lama.
 
 ---
 
 ## 🛠️ Tech Stack
 
-*   **Core Framework**: [Laravel 12](https://laravel.com/) (PHP 8.2+)
-*   **Starter Kit**: [Laravel Breeze](https://laravel.com/docs/12.x/breeze) (Blade & Alpine.js)
-*   **Frontend & Styling**: [Tailwind CSS](https://tailwindcss.com/) & [Vite](https://vite.dev/)
-*   **Database**: MySQL / MariaDB
-*   **Libraries / Packages**:
-    *   `simplesoftwareio/simple-qrcode` - Pembuatan QR Code dinamis secara lokal.
-    *   `midtrans/midtrans-php` - Siap untuk integrasi payment gateway masa depan.
+- **Backend**: Laravel 11 (PHP 8.2+)
+- **Frontend**: Blade Templating, TailwindCSS, Alpine.js
+- **Database**: MySQL
+- **Payments**: Midtrans PHP Client
+- **PDF Generation**: DomPDF (Barryvdh)
+- **Asset Bundler**: Vite
 
 ---
 
-## 💾 Struktur Database Utama
+## 🚀 Panduan Instalasi (Untuk Developer)
 
-Aplikasi ini menggunakan 4 tabel utama yang saling berelasi:
+Ikuti langkah-langkah di bawah ini untuk meng-*clone* dan menjalankan aplikasi di komputer (*local environment*) Anda.
 
-1.  **`users`**: Menyimpan kredensial pengguna dan peran akses (`role` bernilai `user` atau `admin`).
-2.  **`films`**: Menyimpan detail film seperti judul, genre, durasi, deskripsi, dan path poster film.
-3.  **`schedules`**: Menyimpan jadwal tayang yang menghubungkan film ke studio, tanggal, jam tayang, dan harga tiket.
-4.  **`bookings`**: Menyimpan detail pemesanan kursi per order, status pembayaran (`pending` / `success`), serta token transaksi.
-    > [!NOTE]
-    > Tabel `bookings` memiliki indeks unik gabungan (`unique(['schedule_id', 'seat_number'])`) di tingkat database untuk memastikan perlindungan mutlak dari masalah *race condition* atau *double-booking* kursi.
+### 1. Persiapan Awal
+Pastikan Anda sudah menginstal:
+- PHP >= 8.2
+- Composer
+- Node.js & NPM
+- XAMPP / MySQL Database
 
----
-
-## 🔑 Akun Uji Coba Default
-
-Jika Anda menjalankan Database Seeder bawaan, akun-akun berikut akan otomatis terdaftar di sistem:
-
-### 🛡️ Administrator (Admin)
-*   **Email**: `admin@bioskop.com`
-*   **Password**: `password123`
-*   **Rute Login**: `http://localhost/Bioskop_App/public/admin/login` *(atau port default artisan serve)*
-
-### 👥 Pengguna Biasa (User)
-*   **Email**: `test@example.com`
-*   **Password**: `password`
-*   **Rute Login**: `http://localhost/Bioskop_App/public/login` *(atau port default artisan serve)*
-
----
-
-## 🚀 Panduan Setup & Instalasi Lengkap
-
-Ikuti langkah-langkah di bawah ini untuk memasang dan menjalankan proyek di lingkungan lokal Anda.
-
-### 📌 Prasyarat Sistem
-Pastikan komputer Anda telah terinstal:
-*   PHP >= 8.2 (dengan ekstensi `pdo_mysql`, `gd`, `bcmath`, `ctype`, `fileinfo`, `openssl` aktif)
-*   [Composer](https://getcomposer.org/)
-*   [Node.js & NPM](https://nodejs.org/)
-*   Web Server lokal seperti [WampServer](https://www.wampserver.com/), [Laragon](https://laragon.org/), atau XAMPP yang menjalankan MySQL.
-
----
-
-### Langkah 1: Clone Repository
-Buka terminal/CMD Anda, arahkan ke direktori web server (misal `C:\wamp64\www\`), lalu jalankan:
+### 2. Clone Repository & Install Dependencies
+Buka terminal dan jalankan perintah berikut:
 ```bash
-git clone https://github.com/zen552/Bioskop_App.git
-cd Bioskop_App
-```
+git clone <URL_REPOSITORY_ANDA> bioskop-app
+cd bioskop-app
 
-### Langkah 2: Install Dependensi PHP
-Unduh seluruh package PHP yang dibutuhkan aplikasi menggunakan Composer:
-```bash
+# Install dependency backend
 composer install
-```
 
-### Langkah 3: Install Dependensi Frontend
-Unduh library Javascript/CSS yang diperlukan untuk build aset:
-```bash
+# Install dependency frontend
 npm install
 ```
 
-### Langkah 4: Salin Konfigurasi Lingkungan (`.env`)
-Salin file `.env.example` menjadi `.env` baru:
-
-**Melalui Command Prompt (Windows CMD):**
-```cmd
-copy .env.example .env
-```
-**Melalui PowerShell / Git Bash / Linux Terminal:**
+### 3. Konfigurasi Environment (`.env`)
+Salin file `.env.example` menjadi `.env`:
 ```bash
 cp .env.example .env
 ```
-
-### Langkah 5: Konfigurasi File `.env`
-Buka file `.env` yang baru dibuat dengan teks editor Anda, sesuaikan pengaturan database sesuai dengan lingkungan Anda. 
-
-Contoh konfigurasi standar:
-```env
-APP_NAME="BioskopKu"
-APP_ENV=local
-APP_KEY=
-APP_DEBUG=true
-APP_URL=http://localhost/Bioskop_App/public
-
-DB_CONNECTION=mysql
-DB_HOST=127.0.0.1
-DB_PORT=3306
-DB_DATABASE=bioskop_app
-DB_USERNAME=root
-DB_PASSWORD=            # Isi password MySQL Anda (misal "root" jika pakai WampServer)
-```
-> [!TIP]
-> Jika Anda menjalankan proyek menggunakan perintah `php artisan serve`, ubah `APP_URL` menjadi `http://127.0.0.1:8000`.
-
-### Langkah 6: Generate Application Key
-Jalankan perintah ini untuk membuat key enkripsi unik aplikasi Laravel:
+Generate kunci aplikasi Laravel:
 ```bash
 php artisan key:generate
 ```
 
-### Langkah 7: Siapkan Database
-Buka aplikasi pengelola database Anda (seperti phpMyAdmin, HeidiSQL, atau DBeaver), lalu buat sebuah database baru bernama:
-```sql
-CREATE DATABASE bioskop_app;
+Buka file `.env` dan atur konfigurasi berikut:
+
+**A. Database:**
+Buat database kosong di MySQL (misal: `bioskop_db`), lalu sesuaikan di `.env`:
+```env
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=bioskop_db
+DB_USERNAME=root
+DB_PASSWORD=
 ```
 
-### Langkah 8: Jalankan Migrasi & Seeder Database
-Kirim seluruh tabel ke database baru Anda dan isi dengan data uji coba bawaan (User seeder & Admin seeder):
+**B. Midtrans (Payment Gateway):**
+Buat akun Midtrans Sandbox, dapatkan kunci API-nya, dan masukkan:
+```env
+MIDTRANS_SERVER_KEY="SB-Mid-server-xxxxxxxxx"
+MIDTRANS_CLIENT_KEY="SB-Mid-client-xxxxxxxxx"
+MIDTRANS_IS_PRODUCTION=false
+```
+
+**C. Email SMTP (Untuk E-Ticket):**
+Disarankan menggunakan Mailtrap untuk *testing local*:
+```env
+MAIL_MAILER=smtp
+MAIL_HOST=sandbox.smtp.mailtrap.io
+MAIL_PORT=2525
+MAIL_USERNAME=username_mailtrap_anda
+MAIL_PASSWORD=password_mailtrap_anda
+MAIL_ENCRYPTION=tls
+MAIL_FROM_ADDRESS="no-reply@bioskopku.com"
+MAIL_FROM_NAME="BioskopKu Ticket"
+```
+
+**D. Konfigurasi Antrean (Queue):**
+Pastikan queue menggunakan database agar *loading* pembayaran instan.
+```env
+QUEUE_CONNECTION=database
+```
+
+### 4. Setup Database & Assets
+Jalankan migrasi untuk membuat seluruh tabel di database:
 ```bash
-# Jalankan seluruh migrasi database
 php artisan migrate
-
-# Jalankan seeder akun user dan admin default
-php artisan db:seed --class=DatabaseSeeder
-php artisan db:seed --class=AdminSeeder
-```
-*Atau, Anda dapat melakukan migrasi ulang beserta seeder sekaligus:*
-```bash
-php artisan migrate:fresh --seed
 ```
 
-### Langkah 9: Buat Simbolik Link Storage
-Langkah ini sangat penting agar file gambar/poster film yang diunggah oleh admin melalui dashboard dapat diakses dan ditampilkan di halaman katalog pengguna:
+Hubungkan folder *storage* (agar gambar/poster bisa dibaca oleh *public*):
 ```bash
 php artisan storage:link
 ```
 
-### Langkah 10: Jalankan Aplikasi
-Proyek ini memiliki skrip otomasi yang didefinisikan pada file `composer.json` untuk mempermudah pengembangan.
-
-#### Cara Mudah (Single Command):
-Jalankan perintah berikut untuk menjalankan server Laravel, server bundler Vite, queue handler, dan log viewer secara bersamaan di dalam satu terminal:
+Build semua aset *frontend* (Tailwind & JS) untuk produksi. (Ini membuat Anda tidak perlu terus-menerus menjalankan `npm run dev` saat presentasi/menjalankan aplikasi).
 ```bash
-composer run dev
+npm run build
 ```
 
-#### Cara Manual (Multi Terminal):
-Jika Anda ingin menjalankan layanan secara terpisah:
-1.  **Terminal 1**: Jalankan server lokal Laravel:
-    ```bash
-    php artisan serve
-    ```
-2.  **Terminal 2**: Jalankan compiler aset Vite untuk CSS & JS:
-    ```bash
-    npm run dev
-    ```
+---
 
-Aplikasi kini dapat diakses di peramban Anda melalui alamat: **`http://127.0.0.1:8000`** atau **`http://localhost/Bioskop_App/public`**.
+## 🏃‍♂️ Menjalankan Aplikasi (Run Local)
+
+Karena kita menggunakan sistem pengiriman email di *background* (`QUEUE_CONNECTION=database`), Anda wajib membuka **2 terminal** secara bersamaan.
+
+**Terminal 1 (Menjalankan Web Server):**
+```bash
+php artisan serve
+```
+
+**Terminal 2 (Menjalankan Background Worker untuk Email):**
+```bash
+php artisan queue:work
+```
+
+Aplikasi kini dapat diakses di browser melalui URL: **`http://127.0.0.1:8000`**
 
 ---
 
-## 🗺️ Struktur Rute Penting (Routes)
+## 👥 Akun Default
 
-Aplikasi ini menggunakan otorisasi middleware untuk membagi hak akses rute web:
+Jika Anda menjalankan *seeder* (jika ada) atau perlu membuat akun, Anda dapat mendaftar (*register*) seperti biasa di halaman web. 
 
-| Otoritas | Rute URL | Controller / Method | Deskripsi |
-| :--- | :--- | :--- | :--- |
-| **Guest / Publik** | `/` | `welcome.blade.php` | Halaman katalog utama |
-| | `/films/{film}` | Route Closure | Detail film & daftar jadwal tayang |
-| **User (Terautentikasi)** | `/booking/seats/{schedule}` | `BookingController@selectSeats` | Pemilihan denah kursi bioskop |
-| | `/booking/confirm/{schedule}`| `BookingController@confirm` | Proses checkout pesanan |
-| | `/pembayaran/{order_id}` | `PaymentController@show` | Invoice & Simulasi Pembayaran |
-| | `/tiket-saya` | `ETicketController@index` | Riwayat daftar e-ticket sukses |
-| | `/e-ticket/{order_id}` | `ETicketController@show` | Detail Tiket Elektronik & QR Code |
-| **Admin (Terautentikasi)** | `/admin/login` | Laravel Breeze | Pintu masuk login administrator |
-| | `/admin/dashboard` | `AdminController@dashboard` | Panel statistik utama admin |
-| | `/admin/films` | `FilmController` (Resource) | Manajemen CRUD Film |
-| | `/admin/schedules` | `ScheduleController` (Resource)| Manajemen CRUD Jadwal Tayang |
-| | `/admin/preview` | `AdminController@previewHome` | Uji coba halaman katalog (Preview) |
+**Untuk menjadikan sebuah akun sebagai Admin:**
+1. Daftar melalui halaman registrasi web.
+2. Buka *database GUI* (seperti phpMyAdmin).
+3. Buka tabel `users`, cari akun Anda.
+4. Ubah nilai kolom `role` menjadi `admin`.
 
 ---
 
-## 🔍 Pemecahan Masalah (Troubleshooting)
-
-### 1. Gambar Poster Film Tidak Muncul
-*   Pastikan Anda sudah menjalankan perintah `php artisan storage:link` di direktori utama proyek.
-*   Cek apakah nilai variabel `APP_URL` di file `.env` Anda sudah tepat dan sesuai dengan URL yang sedang Anda buka di peramban (misal `http://127.0.0.1:8000` jika menggunakan `php artisan serve`).
-*   Jika di Windows, pastikan folder pintasan (symlink) `public/storage` benar-benar mengarah ke folder asli `storage/app/public`.
-
-### 2. Pesan Error Terkait Database Connection
-*   Pastikan server MySQL Anda (Laragon/WAMP/XAMPP) sudah dalam keadaan menyala.
-*   Periksa kembali kecocokan port database di `.env` (biasanya `3306`).
-*   Khusus WAMP/Laragon, pastikan `DB_USERNAME` dan `DB_PASSWORD` sesuai dengan konfigurasi database manager lokal Anda (username bawaan biasanya `root` dan password kosong atau `root`).
-
-### 3. Error Token / CSRF Mismatch
-*   Saat mengirimkan formulir pemesanan atau login, jika Anda menjumpai pesan kedaluwarsa, jalankan pembersihan cache konfigurasi aplikasi:
-    ```bash
-    php artisan config:clear
-    php artisan cache:clear
-    php artisan view:clear
-    ```
-
----
-
-## 📄 Lisensi
-
-Proyek ini dibangun untuk tujuan pembelajaran, portofolio pribadi, dan referensi implementasi aplikasi pemesanan tiket bioskop berbasis Laravel. Anda bebas menyalin dan memodifikasi proyek ini.
+*Project ini dikembangkan sebagai tugas UAS, mengusung standar penulisan kode (clean code) dan keamanan siber (security fixes terhadap celah mass-assignment dan IDOR).*

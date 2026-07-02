@@ -18,6 +18,7 @@ class ETicketController extends Controller
         $orders = Booking::with('schedule.film')
             ->where('user_id', auth()->id())
             ->where('status', 'success')
+            ->latest()
             ->get()
             ->groupBy('order_id');
 

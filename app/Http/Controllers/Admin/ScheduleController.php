@@ -57,7 +57,7 @@ class ScheduleController extends Controller
 
     public function destroy(Schedule $schedule)
     {
-        $schedule->delete();
-        return redirect()->route('admin.schedules.index')->with('success', 'Jadwal berhasil dihapus!');
+        $schedule->delete(); // Soft delete — data booking user tetap aman
+        return redirect()->route('admin.schedules.index')->with('success', 'Jadwal berhasil dinonaktifkan. Data history booking tetap tersimpan.');
     }
 }

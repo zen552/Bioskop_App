@@ -39,7 +39,7 @@
                        class="text-indigo-300 hover:underline mr-3 text-xs font-semibold">Edit</a>
                     <form action="{{ route('admin.schedules.destroy', $schedule) }}"
                           method="POST" class="inline"
-                          onsubmit="return confirm('Hapus jadwal ini?')">
+                          onsubmit="confirmDelete(event, this, '{{ $schedule->film->judul }} - {{ \Carbon\Carbon::parse($schedule->tanggal)->format('d M') }} {{ \Carbon\Carbon::parse($schedule->jam_tayang)->format('H:i') }}')">
                         @csrf @method('DELETE')
                         <button class="text-red-300 hover:underline text-xs font-semibold">Hapus</button>
                     </form>
@@ -59,7 +59,7 @@
                         <div><span class="text-gray-400">Harga:</span> <span class="font-semibold text-emerald-400">Rp {{ number_format($schedule->harga, 0, ',', '.') }}</span></div>
                         <div class="mt-2 flex items-center justify-end border-t border-white/10 pt-3 gap-4">
                             <a href="{{ route('admin.schedules.edit', $schedule) }}" class="font-semibold text-indigo-300">Edit</a>
-                            <form action="{{ route('admin.schedules.destroy', $schedule) }}" method="POST" class="inline" onsubmit="return confirm('Hapus jadwal ini?')">
+                            <form action="{{ route('admin.schedules.destroy', $schedule) }}" method="POST" class="inline" onsubmit="confirmDelete(event, this, '{{ $schedule->film->judul }} - {{ \Carbon\Carbon::parse($schedule->tanggal)->format('d M') }} {{ \Carbon\Carbon::parse($schedule->jam_tayang)->format('H:i') }}')">
                                 @csrf @method('DELETE')
                                 <button class="font-semibold text-red-300">Hapus</button>
                             </form>
@@ -81,3 +81,27 @@
     <div class="mt-4">{{ $schedules->links() }}</div>
 </div>
 @endsection
+
+@push('scripts')
+<script>
+    function confirmDelete(e, form, title) {
+        e.preventDefault();
+        Swal.fire({
+            title: 'Hapus Jadwal?',
+            text: `Apakah Anda yakin ingin menonaktifkan jadwal tayang "${title}"?`,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#ef4444',
+            cancelButtonColor: '#4f46e5',
+            confirmButtonText: 'Ya, hapus!',
+            cancelButtonText: 'Batal',
+            background: '#16161d',
+            color: '#fff'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                form.submit();
+            }
+        });
+    }
+</script>
+@endpush

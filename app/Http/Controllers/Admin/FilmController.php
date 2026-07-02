@@ -73,8 +73,8 @@ class FilmController extends Controller
 
     public function destroy(Film $film)
     {
-        $film->delete();
-        return redirect()->route('admin.films.index')->with('success', 'Film berhasil dihapus!');
+        $film->delete(); // Soft delete — film disembunyikan tapi data lama aman
+        return redirect()->route('admin.films.index')->with('success', 'Film berhasil dinonaktifkan. Data history tetap aman.');
     }
 
     /**

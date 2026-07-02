@@ -28,9 +28,11 @@ class Booking extends Model
 
     /**
      * Relasi ke Schedule (Jadwal tayang mana yang dipesan)
+     * withTrashed() memastikan e-ticket tetap bisa dibuka
+     * meskipun jadwalnya sudah dinonaktifkan (soft deleted)
      */
     public function schedule(): BelongsTo
     {
-        return $this->belongsTo(Schedule::class);
+        return $this->belongsTo(Schedule::class)->withTrashed();
     }
 }
