@@ -393,7 +393,7 @@
     <div class="main">
 
         {{-- Tombol Kembali --}}
-        <a href="{{ url()->previous() }}" class="back-link">← Kembali ke Jadwal</a>
+        <a href="{{ route('films.detail', $film->id) }}" class="back-link">← Kembali ke Jadwal</a>
 
         {{-- Alert Error Validasi --}}
         @if($errors->any())
